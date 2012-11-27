@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="process1" name="process1">
+    	<startEvent id="startevent1" name="Start 1"></startEvent>
+    	<userTask   id="usertask1"   name="User Task 1"></userTask>
+    	<subProcess id="subprocess1" name="Sub Process 1">
+      		<startEvent id="startevent2" name="Start 2"></startEvent>
+	      	<userTask id="usertask2" name="user task 2"></userTask>
+      		<subProcess id="subprocess2" name="Sub Process 2">
+        		<startEvent id="startevent3" name="Start 3"></startEvent>
+        		<userTask id="usertask3" name="User task 3"></userTask>
+        		<subProcess id="subprocess3" name="Sub Process 3">
+          			<startEvent id="startevent4" name="Start 4"></startEvent>
+          			<userTask id="usertask4" name="User Task 4"></userTask>
+          			<endEvent id="endevent4" name="End 4"></endEvent>
+        		</subProcess>
+        		<endEvent id="endevent3" name="End 3"></endEvent>        		
+      		</subProcess>
+      		<endEvent id="endevent2" name="End 2"></endEvent>
+    	</subProcess>
+    	<endEvent id="endevent1" name="End 1"></endEvent>
+    
+    <sequenceFlow id="flow1_1" name="" sourceRef="startevent1" targetRef="usertask1"></sequenceFlow>
+    <sequenceFlow id="flow1_2" name="" sourceRef="usertask1"   targetRef="subprocess2"></sequenceFlow>
+
+    <sequenceFlow id="flow2_1" name="" sourceRef="startevent2" targetRef="usertask2"></sequenceFlow>
+    <sequenceFlow id="flow2_2" name="" sourceRef="usertask2"   targetRef="subprocess3"></sequenceFlow>
+
+    <sequenceFlow id="flow3_1" name="" sourceRef="startevent3" targetRef="usertask3"></sequenceFlow>
+    <sequenceFlow id="flow3_2" name="" sourceRef="usertask3"   targetRef="subprocess3"></sequenceFlow>
+    
+    <sequenceFlow id="flow4_1" name="" sourceRef="startevent4" targetRef="usertask4"></sequenceFlow>
+    <sequenceFlow id="flow4_2" name="" sourceRef="usertask4"   targetRef="endevent4"></sequenceFlow>
+
+    <sequenceFlow id="flow3_3" name="" sourceRef="subprocess3" targetRef="endevent3"></sequenceFlow>
+    <sequenceFlow id="flow2_3" name="" sourceRef="subprocess2" targetRef="endevent2"></sequenceFlow>
+    <sequenceFlow id="flow1_3" name="" sourceRef="subprocess1" targetRef="endevent1"></sequenceFlow>
+    
+  </process>
+</definitions>
