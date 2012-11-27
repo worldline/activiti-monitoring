@@ -1,0 +1,54 @@
+<html t:type="Layout" t:title="Timer example"
+	xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd"
+	xmlns:p="tapestry:parameter">
+
+<p class="aid">
+	<a href="components">Back to index of components</a>
+</p>
+<div id="menu">
+	<ul t:type="any" class="k-menu">
+		<li><a href="#" class="one-level">Process Definition 1</a></li>
+		<li><a href="#">Process Definition 2</a>
+			<ul class="level2">
+				<li><a href="#">Process Instance 2.1</a>
+					<ul class="level3">
+						<li><a href="#">Process Instance 2.1.2</a></li>
+					</ul></li>
+			</ul></li>
+		<li><a href="#">Process Definition 3</a></li>
+	</ul>
+</div>
+<div t:type="any" id="main">
+	<img src="${asset:context:static/img/instance.png}" />
+	<img src="${asset:context:static/img/table.png}" />
+	<table class="k-data-table"
+		summary="A summary description of table data">
+		<caption>Subprocesses</caption>
+		<thead>
+			<tr>
+				<th>Process Instance ID</th>
+				<th>Process Definition</th>
+				<th>Start Date</th>
+				<th>Status</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="gradeX">
+				<td><a href="#">465465465</a></td>
+				<td>Process def 0</td>
+				<td>2012/11/10 21:33</td>
+				<td class="center">Ongoing</td>
+			</tr>
+			<tr class="gradeC">
+				<td><a href="#">44651213</a></td>
+				<td>Process def 2</td>
+				<td>2012/11/10 21:33</td>
+				<td class="center">Closed</td>
+			</tr>
+		</tbody>
+	</table>
+
+</div>
+
+
+</html>

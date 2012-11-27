@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd"
+	xmlns:p="tapestry:parameter">
+<head>
+<link href="css/k-structure.css" rel="stylesheet" type="text/css" />
+<title>${title}</title>
+</head>
+<body>
+
+	<div id="container">
+
+		<!-- PAGE HEADER -->
+		<div id="header">
+			<a t:type="pageLink" t:page="Index">
+				<h1>
+					<img src="${asset:context:static/img/xa.png}" />
+				</h1>
+				<div class="clearer"></div>
+			</a>
+			<div id="navbar">
+				<ul class="k-navbar">
+					<li class="home"><a t:type="pageLink" t:page="Index">Home</a></li>
+					<li><a t:type="pageLink" t:page="Timer">Example page</a></li>
+					<li><a t:type="pageLink" t:page="Tree">Tree page</a></li>
+				</ul>
+			</div>
+			<t:kawwa2.breadcrumb t:home="Index"
+				t:breadcrumbProvider="MyBreadcrumbListProvider" />
+		</div>
+
+		<hr />
+		<!-- COLUMNS WRAPPER/ -->
+		<div id="wrapper">
+			<t:body />
+		</div>
+		<!-- /COLUMNS WRAPPER -->
+
+		<hr />
+		<!-- FOOTER -->
+		<div id="footer">
+			<p class="k-copyright">&copy; Le Studio/Web Platform, Atos
+				Worldline, 2011</p>
+		</div>
+
+	</div>
+	<!-- /container -->
+</body>
+</html>
