@@ -31,9 +31,18 @@ of where to look for pages, components and mixins. -->
         <filter-name>app</filter-name>
         <filter-class>org.apache.tapestry5.TapestryFilter</filter-class>
     </filter>
+	
     <filter-mapping>
         <filter-name>app</filter-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/app/*</url-pattern>
     </filter-mapping>
+    <servlet>
+		<servlet-name>ProcessImageServlet</servlet-name>
+		<servlet-class>org.activiti.monitor.servlet.ProcessImageServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ProcessImageServlet</servlet-name>
+		<url-pattern>/processImage</url-pattern>
+	</servlet-mapping>
 </web-app>
       

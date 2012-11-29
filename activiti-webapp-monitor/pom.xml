@@ -83,11 +83,13 @@
 			<version>${tapestry-release-version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<!-- 
 		<dependency>
 			<groupId>org.tynamo</groupId>
 			<artifactId>tapestry-security</artifactId>
 			<version>0.4.6</version>
 		</dependency>
+		 -->
 
 	</dependencies>
 	<build>

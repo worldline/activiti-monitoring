@@ -7,21 +7,23 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
-import org.apache.shiro.realm.Realm;
-import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.tapestry5.SymbolConstants;
-import org.apache.tapestry5.ioc.Configuration;
+import org.apache.tapestry5.annotations.Service;
 import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.Contribute;
+import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.annotations.Local;
+import org.apache.tapestry5.ioc.services.ApplicationDefaults;
+import org.apache.tapestry5.ioc.services.SymbolProvider;
+import org.apache.tapestry5.services.ApplicationGlobals;
+import org.apache.tapestry5.services.Context;
 import org.apache.tapestry5.services.Request;
 import org.apache.tapestry5.services.RequestFilter;
 import org.apache.tapestry5.services.RequestHandler;
 import org.apache.tapestry5.services.Response;
 import org.slf4j.Logger;
-import org.tynamo.shiro.extension.realm.text.ExtendedPropertiesRealm;
 
 /**
  * This module is automatically included as part of the Tapestry IoC Registry,
@@ -29,6 +31,16 @@ import org.tynamo.shiro.extension.realm.text.ExtendedPropertiesRealm;
  * service definitions.
  */
 public class AppModule {
+	
+	@Inject 
+	private Context context; 
+	
+	@Contribute(SymbolProvider.class)
+    @ApplicationDefaults
+    public static void applicationDefaults(MappedConfiguration<String, String> configuration)
+    {
+        configuration.add(SymbolConstants.APPLICATION_FOLDER, "app");
+    }
 
 	public static void bind(ServiceBinder binder) {
 		// binder.bind(MyServiceInterface.class, MyServiceImpl.class);
@@ -132,17 +144,23 @@ public class AppModule {
 		configuration.add("Timing", filter);
 	}
 
-	
+	/*
 	@Contribute(WebSecurityManager.class)
 	public static void addRealms(Configuration<Realm> configuration) {
+		
 		ExtendedPropertiesRealm realm = new ExtendedPropertiesRealm(
 				"classpath:shiro-users.properties");
 		configuration.add(realm);
 	}
+	*/
 	private ProcessEngine processEngine = null;
 	private IdentityService identityService = null;
 	private RepositoryService repositoryService = null; 
 	private RuntimeService runtimeService = null;
+	
+	@Inject 
+	@Service("ApplicationGlobals") 
+	private ApplicationGlobals applicationGlobals; 
 	
 	public  ProcessEngine buildActivitiProcessEngine() {
 		if (processEngine == null)		
@@ -160,12 +178,17 @@ public class AppModule {
 	public RepositoryService buildRepositoryService() {
 		if (repositoryService == null)
 			repositoryService = buildActivitiProcessEngine().getRepositoryService();
+		applicationGlobals.getServletContext().setAttribute("repositoryService", repositoryService);
+		applicationGlobals.getServletContext().setAttribute("runtimeService", buildActivitiProcessEngine().getRuntimeService());
+
 		return repositoryService;
 	}
 	
 	public RuntimeService buildRuntimeService() {
 		if (runtimeService == null)
 			runtimeService = buildActivitiProcessEngine().getRuntimeService();
+		applicationGlobals.getServletContext().setAttribute("runtimeService", runtimeService);
+		
 		return runtimeService;
 		
 	}

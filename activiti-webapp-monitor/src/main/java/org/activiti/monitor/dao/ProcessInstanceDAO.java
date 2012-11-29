@@ -1,10 +1,14 @@
 package org.activiti.monitor.dao;
 
+import org.apache.tapestry5.beaneditor.NonVisual;
+
 public class ProcessInstanceDAO {
 	
 	String name;
+	
+	@NonVisual	
 	String id;
-	String secondname;
+	
 	public String getName() {
 		return name;
 	}
@@ -16,12 +20,6 @@ public class ProcessInstanceDAO {
 	}
 	public void setId(String id) {
 		this.id = id;
-	}
-	public String getSecondname() {
-		return secondname;
-	}
-	public void setSecondname(String secondname) {
-		this.secondname = secondname;
 	}
 	
 	

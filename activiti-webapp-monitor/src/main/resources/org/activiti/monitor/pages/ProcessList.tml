@@ -1,14 +1,50 @@
 <html xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd"   xmlns:p="tapestry:parameter">
+
+<style>
+ #whatever div {
+  display: inline;
+  margin: 0 1em 0 1em;
+  width: 30%;
+}
+</style>
+
     <head>
         <title>Process List</title>
     </head>
     <body>
+    <table border="0">
+    <tr><td>
+ 	<div>    
+    
         <h1>List Users</h1>
-
-        <t:grid source="processDefinitions" row="processDefinition">
-        	<p:processDefinitionNameCell>
-                <t:actionlink t:id="delete" context="processDefinition.id">${processDefinition.processDefinitionName}</t:actionlink>
-            </p:processDefinitionNameCell>
-        </t:grid>
+		<t:if test="firstLevel">
+	        <t:grid source="processDefinitions" row="processDefinition">
+	        	<p:processDefinitionNameCell>
+	                <t:actionlink t:id="delete" context="processDefinition.id">${processDefinition.processDefinitionName}</t:actionlink>
+	            </p:processDefinitionNameCell>
+	        </t:grid>
+        </t:if>
+		<t:if test="nextLevel">
+	        <t:grid source="processInstances" row="processInstance" add="image"> 
+	        
+	        	<p:nameCell>
+	                <t:actionlink t:id="insert" context="processInstance.id">${processInstance.id}</t:actionlink>
+	            </p:nameCell>
+	            <p:imagecell>
+                   <t:actionlink t:id="image" context="processInstance.id">Image</t:actionlink>
+                </p:imagecell>
+	        
+	        </t:grid>
+        </t:if>
+        </div>
+        </td>
+        <td>
+        <t:if test="hasImage">
+ 		<div align="right" position="absolute"> <img src="/activiti-webapp-monitor/processImage?instanceId=${imageId}"/> </div>
+ 		</t:if>
+	 </td>
+	 </tr>
+</table>	
+        
     </body>
  </html>
