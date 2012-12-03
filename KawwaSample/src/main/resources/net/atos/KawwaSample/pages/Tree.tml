@@ -6,21 +6,57 @@
 	<a href="components">Back to index of components</a>
 </p>
 <div id="menu">
-	<ul t:type="any" class="k-menu">
-		<li><a href="#" class="one-level">Process Definition 1</a></li>
-		<li><a href="#">Process Definition 2</a>
-			<ul class="level2">
-				<li><a href="#">Process Instance 2.1</a>
-					<ul class="level3">
-						<li><a href="#">Process Instance 2.1.2</a></li>
-					</ul></li>
-			</ul></li>
-		<li><a href="#">Process Definition 3</a></li>
-	</ul>
+	<table class="k-data-table"
+		summary="A summary description of table data">
+		<caption>Subprocesses</caption>
+		<thead>
+			<tr>
+				<th>Instance</th>
+				<th>Definition</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="gradeX">
+				<td><a href="#">465465465</a></td>
+				<td>Process def 0</td>
+			</tr>
+			<tr class="gradeC">
+				<td><a href="#">44651213</a></td>
+				<td>Process def 2</td>
+			</tr>
+		</tbody>
+	</table>
+	<!-- 		<img src="${asset:context:static/img/table.png}" /> -->
 </div>
 <div t:type="any" id="main">
 	<img src="${asset:context:static/img/instance.png}" />
-	<img src="${asset:context:static/img/table.png}" />
+
+	<table class="k-data-table"
+		summary="A summary description of table data">
+		<caption>Variables</caption>
+		<thead>
+			<tr>
+				<th>Variable</th>
+				<th>Type</th>
+				<th>Value</th>
+				<th>Last modified</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="gradeX">
+				<td>order id</td>
+				<td>String</td>
+				<td>ef12121fdf45er</td>
+				<td>2012-10-25 22:35:44.365</td>
+			</tr>
+			<tr class="gradeY">
+				<td>customer</td>
+				<td>String</td>
+				<td>demo.massilia@atos.net</td>
+				<td>2012-10-25 22:33:44.365</td>
+			</tr>
+		</tbody>
+	</table>
 	<table class="k-data-table"
 		summary="A summary description of table data">
 		<caption>Subprocesses</caption>
@@ -47,7 +83,6 @@
 			</tr>
 		</tbody>
 	</table>
-
 </div>
 
 

@@ -12,8 +12,10 @@ public class MyBreadcrumbListProvider implements BreadcrumbListProvider  {
 	@Override
 	public List<String[]> getBreadcrumbList(String home, ComponentResources resources) {
 		ArrayList<String[]> list = new ArrayList<String[]>();
-		list.add(new String[]{"Timer", "Timer"});
-		list.add(new String[]{"Tree", "Tree"});
+		list.add(new String[]{"Timer", "Definition 1.1 (id 454545)"});
+		list.add(new String[]{"Timer", "Definition 1 (id 1231245)"});
+		list.add(new String[]{"Tree", "Process Definition 1"});
+		list.add(new String[]{"Timer", "All Definitions"});
 		return list;
 	}
 
