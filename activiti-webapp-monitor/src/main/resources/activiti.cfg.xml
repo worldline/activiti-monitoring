@@ -21,6 +21,7 @@
 <!--      <property name="history" value="none" />  -->
     <property name="mailServerHost" value="mail.my-corp.com" /> 
     <property name="mailServerPort" value="5025" />    
+    <property name="history" value="audit" />
   </bean>
 
 </beans>

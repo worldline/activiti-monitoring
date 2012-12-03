@@ -1,17 +1,13 @@
 package org.activiti.monitor.shiro;
 
-import org.activiti.engine.ProcessEngine;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.realm.SimpleAccountRealm;
-import org.apache.tapestry5.ioc.annotations.Inject;
+import javax.naming.AuthenticationException;
 
-public class ActivitiRealm extends SimpleAccountRealm{
-	
-//	@Inject 	ProcessEngine processEngine;
+public class ActivitiRealm /*
+extends SimpleAccountRealm
+*/
+{
+/*	
+	@Inject 	ProcessEngine processEngine;
 
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
@@ -25,6 +21,6 @@ public class ActivitiRealm extends SimpleAccountRealm{
 		
 	}
 	
-	
+	*/
 
 }

@@ -9,9 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
@@ -40,6 +42,10 @@ public class ProcessList {
 
 	@Inject
 	RepositoryService repositoryService;
+	
+	@Inject
+	HistoryService historyService;
+
 
 	@Inject
 	RuntimeService runtimeService;
@@ -69,30 +75,56 @@ public class ProcessList {
 	static int level = 0;
 	static String processDefinitionId = null;
 
+	
+	public List<String> recursiveSubprocesses(String parentProcessId) {
+		List<String> subprocesses = new ArrayList<String>();
+		for (HistoricProcessInstance historicProcessInstance : historyService
+				.createHistoricProcessInstanceQuery()
+				.superProcessInstanceId(parentProcessId).list()) {
+			String subProcessId = historicProcessInstance.getId();
+			subprocesses.add(subProcessId);
+			subprocesses.addAll(recursiveSubprocesses(subProcessId));
+		}
+		return subprocesses;
+	}
+	
+	
 	public List<Object> getProcessInstances() {
 		ProcessInstanceDAO pi = new ProcessInstanceDAO();
 		List<Object> pdfDaoList = new ArrayList<Object>();
 
 		
+		
+		
+		
+		
 		ProcessInstanceQuery processInstanceQuery = runtimeService.createProcessInstanceQuery();
 
-		if (parentProcess == null)
+		if (parentProcess == null) {
 			processInstanceQuery = processInstanceQuery.processDefinitionId(processDefinitionId);
-		else
-			processInstanceQuery = processInstanceQuery.superProcessInstanceId(parentProcess);
-		
-		List<ProcessInstance> processInstanceList = processInstanceQuery.list();
-		
-		
-		System.out.println(processInstanceList.size());
-		for (ProcessInstance pp : processInstanceList) {
-			ProcessInstanceDAO p = new ProcessInstanceDAO();
-			p.setId(pp.getId());
-			p.setName(pp.getBusinessKey());
-			p.setName(pp.getId() + "12");
-			pdfDaoList.add(p);
+			List<ProcessInstance> processInstanceList = processInstanceQuery.list();
+			for (ProcessInstance processInstance:processInstanceList) {
+				ProcessInstanceDAO p = new ProcessInstanceDAO();
+				p.setId(processInstance.getId());
+//				p.setName(pp.getBusinessKey());
+//				p.setName(pp.getId() + "12");
+				pdfDaoList.add(p);
+				
+			}
+			
 		}
+		else {
+//			processInstanceQuery = processInstanceQuery.superProcessInstanceId(parentProcess);
+			List<String> subprocesses = recursiveSubprocesses(parentProcess);
+			for (String pp : subprocesses) {
+				ProcessInstanceDAO p = new ProcessInstanceDAO();
+				p.setId(pp);
+//				p.setName(pp.getBusinessKey());
+//				p.setName(pp.getId() + "12");
+				pdfDaoList.add(p);
+			}
 
+		}
 		return pdfDaoList;
 	}
 

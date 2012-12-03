@@ -2,6 +2,7 @@ package org.activiti.monitor.services;
 
 import java.io.IOException;
 
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
@@ -157,6 +158,7 @@ public class AppModule {
 	private IdentityService identityService = null;
 	private RepositoryService repositoryService = null; 
 	private RuntimeService runtimeService = null;
+	private HistoryService historyService;;
 	
 	@Inject 
 	@Service("ApplicationGlobals") 
@@ -194,6 +196,11 @@ public class AppModule {
 	}
 	
 	
+	public HistoryService buildHistoryService() {
+		if (historyService == null)
+			historyService = buildActivitiProcessEngine().getHistoryService();
+		return historyService;
+	}
 	
 	
 	

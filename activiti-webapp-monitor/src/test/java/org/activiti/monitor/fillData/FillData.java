@@ -21,7 +21,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
 public class FillData {
-	 final private int N_PROCESSES = 10 ;
+	 final private int N_PROCESSES = 1 ;
 	 final private int N_INSTANCES = 50 ;
 	 final private static int level1Percent = 80;
 	 final private static int level2Percent = 60;
@@ -102,7 +102,9 @@ public class FillData {
 		
 		
 		for (ProcessDefinition pd:processDefinitionList) {
-			for (int i=0; i<N_INSTANCES; i++) {
+			if (pd.getName().contains("_"))
+				continue;
+			for (int i=0; i<N_INSTANCES; i++) {				
 				ProcessInstance processInstance = runtimeService.startProcessInstanceById(pd.getId());
 				instances[processInstanceIndex++] =  processInstance;
 			}
@@ -111,17 +113,28 @@ public class FillData {
 		System.out.println("starting instances Finished");
 		
 	}
+	public static final String[] processFileNames = {
+		"org/activiti/monitor/fillData/process1.bpmn", 
+		"org/activiti/monitor/fillData/process1_2.bpmn",
+		"org/activiti/monitor/fillData/process1_3.bpmn",
+		"org/activiti/monitor/fillData/process1_4.bpmn"};
 
 	void deplyProcesses() throws IOException {
 		
 		DeploymentBuilder deployment = repositoryService.createDeployment();
 
-		String processStr = readFile("org/activiti/monitor/fillData/process1.bpmn");
-		for (int i = 0; i < N_PROCESSES; i++) {
-			String newProcName = processStr.replaceAll("\"process1\"",
-					"\"process" + i + "\"");
-			deployment = deployment.addInputStream("process" + i + ".bpmn20.xml",
-					new ByteArrayInputStream(newProcName.getBytes()));
+		
+		int j=0;
+		for (String processFileName:processFileNames) {
+			String processStr = readFile(processFileName);
+			for (int i = 1; i <= N_PROCESSES; i++) {
+				String newProcName = processStr.replaceAll("\"process1\"",
+						"\"process" + i + "\"");
+				newProcName = processStr;
+				deployment = deployment.addInputStream("process" + + j + "_" + i + ".bpmn20.xml",
+						new ByteArrayInputStream(newProcName.getBytes()));
+			}
+			j++;
 		}
 
 		System.out.println("Start deploying");
@@ -135,7 +148,7 @@ public class FillData {
 		BufferedReader br = new BufferedReader(
 				new InputStreamReader(
 						ClassLoader
-								.getSystemResourceAsStream("org/activiti/monitor/fillData/process1.bpmn"),
+								.getSystemResourceAsStream(path),
 						"UTF-8"));
 
 		StringBuffer sb = new StringBuffer();

@@ -52,7 +52,7 @@ public class ProcessDefinitionImageStreamResourceBuilder {
     ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(processInstance
             .getProcessDefinitionId());
 
-    if (processDefinition != null && processDefinition.isGraphicalNotationDefined()) {
+    if (processDefinition != null ) {
       try {
         InputStream definitionImageStream = ProcessDiagramGenerator.generateDiagram(processDefinition, "png", 
                 runtimeService.getActiveActivityIds(processInstance.getId()));
