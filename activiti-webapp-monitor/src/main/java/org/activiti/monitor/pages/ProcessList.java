@@ -37,6 +37,7 @@ public class ProcessList {
 	@Property
 	static String parentProcess = null;
 
+
 	@Property
 	ProcessInstanceDAO processInstance;
 
@@ -55,6 +56,11 @@ public class ProcessList {
 
 	@Persist("flash")
 	static String imageId;
+	
+
+	@Persist("flash")
+	static List<String> path = new ArrayList<String>();
+
 	
 	public boolean getFirstLevel() {
 		return firstLevel;
@@ -147,17 +153,33 @@ public class ProcessList {
 	void onActionFromDelete(String processDefinitionId) {
 		level = 1;
 		firstLevel = false;
+		parentProcess = null;
 		this.processDefinitionId = processDefinitionId;
+		imageId = null;
+	
 		System.out.println(processDefinitionId);
 	}
 
 	void onActionFromInsert(String processInstanceId) {
-
+		
+		path.add(parentProcess);
 		parentProcess = processInstanceId;
+		imageId = null;
+		
 		System.out.println(processInstanceId);
 	}
 	
+	void onActionFromUp() {
+		imageId = null;
+		if (path.size() == 0) {
+			parentProcess = null;
+			firstLevel = true;
+		} else {
+			parentProcess = path.remove(path.size()-1);
+			System.out.println("parent_id=" + parentProcess);
+		}
 
+	}
 	
 	void onActionFromImage(String processInstanceId) {
 		imageId = processInstanceId;
