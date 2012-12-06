@@ -13,14 +13,19 @@ import org.apache.tapestry5.ioc.annotations.Symbol;
 /**
  * Layout component for pages of application activiti-webapp-monitor.
  */
-@Import(stylesheet = "context:layout/layout.css")
+@Import(stylesheet = {"context:static/css/k-structure.css", "context:static/css/k-theme1.css"})
 public class Layout
 {
+	
+	public String getTitle(){
+		return title;
+	}
+
+	
     /**
      * The page title, for the <title> element and the <h1> element.
      */
-    @Property
-    @Parameter(required = true, defaultPrefix = BindingConstants.LITERAL)
+    @Parameter(defaultPrefix=BindingConstants.LITERAL)    
     private String title;
 
     @Property

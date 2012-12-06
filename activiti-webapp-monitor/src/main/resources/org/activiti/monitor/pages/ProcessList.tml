@@ -1,4 +1,4 @@
-<html xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd"   xmlns:p="tapestry:parameter">
+<html t:type="Layout"  t:title="Test Title" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd"   xmlns:p="tapestry:parameter">
 
 <style>
  #whatever div {
@@ -12,12 +12,32 @@
         <title>Process List</title>
     </head>
     <body>
-    <table border="0">
-    <tr><td>
- 	<div>    
     
-        <h1>List Users</h1>
+    <table border="0">
+    <tr>
+    <td >
+        <t:if test="firstLevel">
+            <p:else>
+            <t:actionlink t:id="gotoPath1" context="-1">${processDefinitionName}</t:actionlink>/
+            </p:else>
+        </t:if>
+	            
+	    <t:loop source="path" value="pathElement" index="var:indexProp">
+	                <t:actionlink t:id="gotoPath" context="var:indexProp">${pathElement}</t:actionlink>/
+	        </t:loop>
+	        ${parent}
+	            </td >
+	        
+    </tr>
+    <tr>
+    <td>
         <t:actionlink t:id="up" >up</t:actionlink>
+        </td>
+        </tr>
+        <tr>
+    
+    <td>
+ 	<div>    
 		<t:if test="firstLevel">
 	        <t:grid source="processDefinitions" row="processDefinition">
 	        	<p:processDefinitionNameCell>
