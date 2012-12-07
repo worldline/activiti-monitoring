@@ -45,8 +45,6 @@ public class ProcessList {
 	@Inject
 	private ProcessEngine processEngine;
 
-	@Persist("flash")
-	static String imageId;
 
 	public List<String> getPath() {
 		return path;
@@ -68,12 +66,9 @@ public class ProcessList {
 	}
 
 	public boolean getHasImage() {
-		return imageId != null;
+		return parentProcess != null;
 	}
 
-	public String getImageId() {
-		return imageId;
-	}
 
 
 	public String getProcessDefinitionId() {
@@ -115,7 +110,7 @@ public class ProcessList {
 			for (ProcessInstance processInstance : processInstanceList) {
 				ProcessInstanceDAO p = new ProcessInstanceDAO();
 				p.setId(processInstance.getId());
-				// p.setName(pp.getBusinessKey());
+				p.setBusinessKey(processInstance.getBusinessKey());
 				// p.setName(pp.getId() + "12");
 				pdfDaoList.add(p);
 
@@ -161,7 +156,6 @@ public class ProcessList {
 				.createProcessDefinitionQuery()
 				.processDefinitionId(processDefinitionId).singleResult();
 		processDefinitionName = processDefinitionList.getName();
-		imageId = null;
 
 	}
 
@@ -170,7 +164,6 @@ public class ProcessList {
 		if (parentProcess != null)
 			path.add(parentProcess);
 		parentProcess = processInstanceId;
-		imageId = null;
 
 	}
 
@@ -181,7 +174,6 @@ public class ProcessList {
 	}
 
 	void onActionFromGotoPath(int index) {
-		imageId = null;
 
 		if (index != -1) {
 
@@ -197,7 +189,6 @@ public class ProcessList {
 	}
 
 	void onActionFromUp() {
-		imageId = null;
 		if (path.size() == 0) {
 			if (parentProcess == null)
 				processDefinitionId = null;
@@ -209,8 +200,5 @@ public class ProcessList {
 
 	}
 
-	void onActionFromImage(String processInstanceId) {
-		imageId = processInstanceId;
-	}
 
 }

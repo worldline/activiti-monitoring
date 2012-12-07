@@ -33,6 +33,13 @@
         		</td>
         	</tr>
         	<tr>
+        		<td align="center">
+        			<t:if test="hasImage">
+ 						<div align="center" position="absolute"> <img src="/activiti-webapp-monitor/processImage?instanceId=${parent}"/> </div>
+ 					</t:if>
+	 			</td>        	
+        	</tr>
+        	<tr>
 	    		<td>
  					<div>    
 						<t:if test="firstLevel">
@@ -42,23 +49,15 @@
 	            				</p:processDefinitionNameCell>
 	        				</t:grid>
 						<p:else>	        
-							<t:grid source="processInstances" row="processInstance" add="image"> 
+							<t:grid source="processInstances" row="processInstance" > 
 	        					<p:nameCell>
 	                				<t:actionlink t:id="processBranchInstances" context="processInstance.id">${processInstance.id}</t:actionlink>
 	            				</p:nameCell>
-	            				<p:imagecell>
-                   					<t:actionlink t:id="image" context="processInstance.id">Image</t:actionlink>
-                				</p:imagecell>
 	           				</t:grid>
 			 			</p:else>	        	        
         				</t:if>
         			</div>
         		</td>
-        		<td>
-        			<t:if test="hasImage">
- 						<div align="right" position="absolute"> <img src="/activiti-webapp-monitor/processImage?instanceId=${imageId}"/> </div>
- 					</t:if>
-	 			</td>
 	 		</tr>
 		</table>	        
     </body>

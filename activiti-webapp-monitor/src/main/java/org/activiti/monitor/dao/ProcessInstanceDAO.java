@@ -6,8 +6,11 @@ public class ProcessInstanceDAO {
 	
 	String name;
 	
-	@NonVisual	
+		
+	@NonVisual
 	String id;
+
+	String businessKey;
 	
 	public String getName() {
 		return name;
@@ -21,6 +24,14 @@ public class ProcessInstanceDAO {
 	public void setId(String id) {
 		this.id = id;
 	}
+	
+	public String getBusinessKey() {
+		return businessKey;
+	}
+	public void setBusinessKey(String businessKey) {
+		this.businessKey = businessKey;
+	}
+	
 	
 	
 

@@ -25,16 +25,12 @@ public class ProcessImageServlet extends HttpServlet {
 
 		response.setContentType("image/png");
 		String processInstanceId = request.getParameter("instanceId");
-		System.out.println(processInstanceId);
 		
 		RuntimeService runtimeService = (RuntimeService) getServletContext().getAttribute("runtimeService");
 		RepositoryService repositoryService = (RepositoryService) getServletContext().getAttribute("repositoryService");
-		System.out.println(runtimeService);
-		System.out.println(repositoryService);
 		if (repositoryService == null || runtimeService == null)
 			return;
 
-		System.out.println("Show " + processInstanceId);
 		ProcessInstance pi =runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
 		ProcessDefinitionImageStreamResourceBuilder imageBuilder = new ProcessDefinitionImageStreamResourceBuilder();
 
