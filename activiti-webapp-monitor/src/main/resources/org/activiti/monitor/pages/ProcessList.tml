@@ -1,70 +1,65 @@
 <html t:type="Layout"  t:title="Test Title" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd"   xmlns:p="tapestry:parameter">
 
-<style>
- #whatever div {
-  display: inline;
-  margin: 0 1em 0 1em;
-  width: 30%;
-}
-</style>
-
-    <head>
+	<style>
+	 #whatever div {
+	  display: inline;
+	  margin: 0 1em 0 1em;
+	  width: 30%;
+	}
+	</style>
+	<head>
         <title>Process List</title>
     </head>
     <body>
     
-    <table border="0">
-    <tr>
-    <td >
-        <t:if test="firstLevel">
-            <p:else>
-            <t:actionlink t:id="gotoPath1" context="-1">${processDefinitionName}</t:actionlink>/
-            </p:else>
-        </t:if>
+    	<table border="0">
+    		<tr>
+    			<td >
+        			<t:if test="firstLevel">
+            		<p:else>
+            			<t:actionlink t:id="gotoPath1" context="-1">${processDefinitionName}</t:actionlink>/
+            		</p:else>
+        			</t:if>
 	            
-	    <t:loop source="path" value="pathElement" index="var:indexProp">
-	                <t:actionlink t:id="gotoPath" context="var:indexProp">${pathElement}</t:actionlink>/
-	        </t:loop>
-	        ${parent}
-	            </td >
-	        
-    </tr>
-    <tr>
-    <td>
-        <t:actionlink t:id="up" >up</t:actionlink>
-        </td>
-        </tr>
-        <tr>
-    
-    <td>
- 	<div>    
-		<t:if test="firstLevel">
-	        <t:grid source="processDefinitions" row="processDefinition">
-	        	<p:processDefinitionNameCell>
-	                <t:actionlink t:id="listRootProcesses" context="processDefinition.id">${processDefinition.processDefinitionName}</t:actionlink>
-	            </p:processDefinitionNameCell>
-	        </t:grid>
-			<p:else>	        
-				<t:grid source="processInstances" row="processInstance" add="image"> 
-	        
-	        	<p:nameCell>
-	                <t:actionlink t:id="processBranchInstances" context="processInstance.id">${processInstance.id}</t:actionlink>
-	            </p:nameCell>
-	            <p:imagecell>
-                   <t:actionlink t:id="image" context="processInstance.id">Image</t:actionlink>
-                </p:imagecell>
-	           </t:grid>
-			 </p:else>	        	        
-        </t:if>
-        </div>
-        </td>
-        <td>
-        <t:if test="hasImage">
- 		<div align="right" position="absolute"> <img src="/activiti-webapp-monitor/processImage?instanceId=${imageId}"/> </div>
- 		</t:if>
-	 </td>
-	 </tr>
-</table>	
-        
+	    			<t:loop source="path" value="pathElement" index="var:indexProp">
+	                	<t:actionlink t:id="gotoPath" context="var:indexProp">${pathElement}</t:actionlink>/
+	        		</t:loop>
+	        		${parent}
+	            </td >	        
+    		</tr>
+    		<tr>
+    			<td>
+        			<t:actionlink t:id="up" >up</t:actionlink>
+        		</td>
+        	</tr>
+        	<tr>
+	    		<td>
+ 					<div>    
+						<t:if test="firstLevel">
+	        				<t:grid source="processDefinitions" row="processDefinition">
+	        					<p:processDefinitionNameCell>
+	                			<t:actionlink t:id="listRootProcesses" context="processDefinition.id">${processDefinition.processDefinitionName}</t:actionlink>
+	            				</p:processDefinitionNameCell>
+	        				</t:grid>
+						<p:else>	        
+							<t:grid source="processInstances" row="processInstance" add="image"> 
+	        					<p:nameCell>
+	                				<t:actionlink t:id="processBranchInstances" context="processInstance.id">${processInstance.id}</t:actionlink>
+	            				</p:nameCell>
+	            				<p:imagecell>
+                   					<t:actionlink t:id="image" context="processInstance.id">Image</t:actionlink>
+                				</p:imagecell>
+	           				</t:grid>
+			 			</p:else>	        	        
+        				</t:if>
+        			</div>
+        		</td>
+        		<td>
+        			<t:if test="hasImage">
+ 						<div align="right" position="absolute"> <img src="/activiti-webapp-monitor/processImage?instanceId=${imageId}"/> </div>
+ 					</t:if>
+	 			</td>
+	 		</tr>
+		</table>	        
     </body>
  </html>

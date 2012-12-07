@@ -1,10 +1,5 @@
 package org.activiti.monitor.pages;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -19,7 +14,6 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.monitor.dao.ProcessDefinitionDAO;
 import org.activiti.monitor.dao.ProcessInstanceDAO;
-import org.activiti.monitor.graphics.ProcessDefinitionImageStreamResourceBuilder;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.ioc.annotations.Inject;
