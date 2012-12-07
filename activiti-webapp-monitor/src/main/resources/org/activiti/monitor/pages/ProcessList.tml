@@ -41,21 +41,20 @@
 		<t:if test="firstLevel">
 	        <t:grid source="processDefinitions" row="processDefinition">
 	        	<p:processDefinitionNameCell>
-	                <t:actionlink t:id="delete" context="processDefinition.id">${processDefinition.processDefinitionName}</t:actionlink>
+	                <t:actionlink t:id="listRootProcesses" context="processDefinition.id">${processDefinition.processDefinitionName}</t:actionlink>
 	            </p:processDefinitionNameCell>
 	        </t:grid>
-        </t:if>
-		<t:if test="nextLevel">
-	        <t:grid source="processInstances" row="processInstance" add="image"> 
+			<p:else>	        
+				<t:grid source="processInstances" row="processInstance" add="image"> 
 	        
 	        	<p:nameCell>
-	                <t:actionlink t:id="insert" context="processInstance.id">${processInstance.id}</t:actionlink>
+	                <t:actionlink t:id="processBranchInstances" context="processInstance.id">${processInstance.id}</t:actionlink>
 	            </p:nameCell>
 	            <p:imagecell>
                    <t:actionlink t:id="image" context="processInstance.id">Image</t:actionlink>
                 </p:imagecell>
-	        
-	        </t:grid>
+	           </t:grid>
+			 </p:else>	        	        
         </t:if>
         </div>
         </td>

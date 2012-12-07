@@ -29,8 +29,6 @@ public class ProcessList {
 			.getName());
 
 	// TODO: should be deleted, uses processDefinition instead
-	@Persist("flash")
-	static boolean firstLevel = true;
 
 	@Property
 	ProcessDefinitionDAO processDefinition;
@@ -67,7 +65,7 @@ public class ProcessList {
 	static List<String> path = new ArrayList<String>();
 
 	public boolean getFirstLevel() {
-		return firstLevel;
+		return processDefinitionId == null;
 	}
 
 	public String getParent() {
@@ -83,9 +81,6 @@ public class ProcessList {
 		return imageId;
 	}
 
-	public boolean getNextLevel() {
-		return !firstLevel;
-	}
 
 	public String getProcessDefinitionId() {
 		return processDefinitionId;
@@ -164,9 +159,8 @@ public class ProcessList {
 		return pdfDaoList;
 	}
 
-	void onActionFromDelete(String processDefinitionId) {
+	void onActionFromlistRootProcesses(String processDefinitionId) {
 		level = 1;
-		firstLevel = false;
 		parentProcess = null;
 		this.processDefinitionId = processDefinitionId;
 		ProcessDefinition processDefinitionList = repositoryService
@@ -175,17 +169,15 @@ public class ProcessList {
 		processDefinitionName = processDefinitionList.getName();
 		imageId = null;
 
-		System.out.println(processDefinitionId);
 	}
 
-	void onActionFromInsert(String processInstanceId) {
+	void onActionFromProcessBranchInstances(String processInstanceId) {
 
 		if (parentProcess != null)
 			path.add(parentProcess);
 		parentProcess = processInstanceId;
 		imageId = null;
 
-		System.out.println(processInstanceId);
 	}
 
 	// TODO: should be changed to eventLink
@@ -199,15 +191,12 @@ public class ProcessList {
 
 		if (index != -1) {
 
-			System.out.println(index);
-			System.out.println(path.toArray()[index]);
 			parentProcess = (String) path.toArray()[index];
 			for (int i = path.size() - 1; i >= index; i--)
 				path.remove(i);
 		} else {
 			path.clear();
 			parentProcess = null;
-			firstLevel = false;
 
 		}
 
@@ -216,47 +205,18 @@ public class ProcessList {
 	void onActionFromUp() {
 		imageId = null;
 		if (path.size() == 0) {
-			parentProcess = null;
-			firstLevel = true;
+			if (parentProcess == null)
+				processDefinitionId = null;
+			else
+				parentProcess = null;
 		} else {
 			parentProcess = path.remove(path.size() - 1);
-			System.out.println("parent_id=" + parentProcess);
 		}
 
 	}
 
 	void onActionFromImage(String processInstanceId) {
 		imageId = processInstanceId;
-		try {
-			System.out.println("Show " + processInstanceId);
-			ProcessDefinitionImageStreamResourceBuilder imageBuilder = new ProcessDefinitionImageStreamResourceBuilder();
-			ProcessInstance pi = runtimeService.createProcessInstanceQuery()
-					.processInstanceId(processInstanceId).singleResult();
-
-			RepositoryService repositoryService = processEngine
-					.getRepositoryService();
-			InputStream is = imageBuilder.buildStreamResource(pi,
-					repositoryService, runtimeService);
-			OutputStream out = new FileOutputStream(new File("c:\\test.png"));
-
-			int read = 0;
-			byte[] bytes = new byte[1024];
-
-			while ((read = is.read(bytes)) != -1) {
-				out.write(bytes, 0, read);
-			}
-
-			is.close();
-			out.flush();
-			out.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 	}
 
 }
