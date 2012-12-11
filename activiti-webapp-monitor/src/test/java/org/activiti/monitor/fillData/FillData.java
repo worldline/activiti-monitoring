@@ -25,7 +25,8 @@ public class FillData {
 	 final private int N_INSTANCES = 50 ;
 	 final private static int level1Percent = 80;
 	 final private static int level2Percent = 60;
-	 final private static int level3Percent = 40;
+	 final private static int level3Percent = 60;
+	 final private static int level4Percent = 60;
 	 
 	 
 	 ProcessEngine processEngine;
@@ -45,6 +46,7 @@ public class FillData {
 		fd.completeTasks("User Task 1", level1Percent);
 		fd.completeTasks("User Task 2", level2Percent);
 		fd.completeTasks("User Task 3", level3Percent);
+		fd.completeTasks("User Task 4", level4Percent);
 		
 //		fd.showResults();
 
