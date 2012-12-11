@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.activiti.engine.HistoryService;
-import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -21,8 +20,6 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 public class ProcessList {
 	protected static final Logger LOGGER = Logger.getLogger(ProcessList.class
 			.getName());
-
-	// TODO: should be deleted, uses processDefinition instead
 
 	@Property
 	ProcessDefinitionDAO processDefinition;
@@ -42,16 +39,9 @@ public class ProcessList {
 	@Inject
 	RuntimeService runtimeService;
 
-	@Inject
-	private ProcessEngine processEngine;
-
-
 	public List<String> getPath() {
 		return path;
 	}
-
-	@Property
-	private String pathElement;
 
 	@Persist("flash")
 	static List<String> path = new ArrayList<String>();

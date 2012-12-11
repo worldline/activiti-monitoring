@@ -1,6 +1,5 @@
 package org.activiti.monitor.shiro;
 
-import javax.naming.AuthenticationException;
 
 public class ActivitiRealm /*
 extends SimpleAccountRealm
