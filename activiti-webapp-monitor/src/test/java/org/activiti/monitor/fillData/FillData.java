@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -106,8 +108,8 @@ public class FillData {
 		for (ProcessDefinition pd:processDefinitionList) {
 			if (pd.getName().contains("_"))
 				continue;
-			for (int i=0; i<N_INSTANCES; i++) {				
-				ProcessInstance processInstance = runtimeService.startProcessInstanceById(pd.getId());
+			for (int i=0; i<N_INSTANCES; i++) {		
+				ProcessInstance processInstance = runtimeService.startProcessInstanceById(pd.getId(), "bk"+i, randomVariables());
 				instances[processInstanceIndex++] =  processInstance;
 			}
 		}
@@ -115,6 +117,16 @@ public class FillData {
 		System.out.println("starting instances Finished");
 		
 	}
+	
+	private static Map<String, Object> randomVariables() {
+		HashMap<String, Object> var = new HashMap<String, Object>();
+		Random random=new Random();
+		for (int i = 0; i < random.nextInt(10); i++) {
+			var.put("var"+random.nextInt(100), "value"+random.nextInt(999));
+		}
+		return var;
+	}
+	
 	public static final String[] processFileNames = {
 		"org/activiti/monitor/fillData/process1.bpmn", 
 		"org/activiti/monitor/fillData/process1_2.bpmn",
