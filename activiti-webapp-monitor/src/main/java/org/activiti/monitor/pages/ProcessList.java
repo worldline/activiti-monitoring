@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.activiti.engine.HistoryService;
+import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -20,6 +21,8 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 public class ProcessList {
 	protected static final Logger LOGGER = Logger.getLogger(ProcessList.class
 			.getName());
+
+	// TODO: should be deleted, uses processDefinition instead
 
 	@Property
 	ProcessDefinitionDAO processDefinition;
@@ -39,9 +42,16 @@ public class ProcessList {
 	@Inject
 	RuntimeService runtimeService;
 
+	@Inject
+	private ProcessEngine processEngine;
+
+
 	public List<String> getPath() {
 		return path;
 	}
+
+	@Property
+	private String pathElement;
 
 	@Persist("flash")
 	static List<String> path = new ArrayList<String>();
@@ -73,24 +83,14 @@ public class ProcessList {
 	static String processDefinitionId = null;
 	static String processDefinitionName = null;
 
-	ProcessInstanceDAO copyInstanceDAO(HistoricProcessInstance h) {
-		ProcessInstanceDAO p = new ProcessInstanceDAO();
-		p.setId(h.getId());
-		p.setStartDate(h.getStartTime());
-		p.setEndDate(h.getEndTime());
-		
-		
-		return p;
-		
-	}
-	public List<ProcessInstanceDAO> recursiveSubprocesses(String parentProcessId) {
-		List<ProcessInstanceDAO> subprocesses = new ArrayList<ProcessInstanceDAO>();
+	public List<String> recursiveSubprocesses(String parentProcessId) {
+		List<String> subprocesses = new ArrayList<String>();
 		for (HistoricProcessInstance historicProcessInstance : historyService
 				.createHistoricProcessInstanceQuery()
 				.superProcessInstanceId(parentProcessId).list()) {
-			
-			subprocesses.add(copyInstanceDAO(historicProcessInstance) );
-			subprocesses.addAll(recursiveSubprocesses(historicProcessInstance.getId()));
+			String subProcessId = historicProcessInstance.getId();
+			subprocesses.add(subProcessId);
+			subprocesses.addAll(recursiveSubprocesses(subProcessId));
 		}
 		return subprocesses;
 	}
@@ -98,21 +98,35 @@ public class ProcessList {
 	public List<Object> getProcessInstances() {
 		ProcessInstanceDAO pi = new ProcessInstanceDAO();
 		List<Object> pdfDaoList = new ArrayList<Object>();
-		
-		List<HistoricProcessInstance> historyProcessInstanceList = historyService
-				.createHistoricProcessInstanceQuery().processDefinitionId(processDefinitionId).list();
-		
+
+		ProcessInstanceQuery processInstanceQuery = runtimeService
+				.createProcessInstanceQuery();
+
 		if (parentProcess == null) {
-			
-			for (HistoricProcessInstance processHistoryInstance : historyProcessInstanceList) {
-				
-				pdfDaoList.add(copyInstanceDAO(processHistoryInstance));
+			processInstanceQuery = processInstanceQuery
+					.processDefinitionId(processDefinitionId);
+			List<ProcessInstance> processInstanceList = processInstanceQuery
+					.list();
+			for (ProcessInstance processInstance : processInstanceList) {
+				ProcessInstanceDAO p = new ProcessInstanceDAO();
+				p.setId(processInstance.getId());
+				p.setBusinessKey(processInstance.getBusinessKey());
+				// p.setName(pp.getId() + "12");
+				pdfDaoList.add(p);
 
 			}
 
 		} else {
-			List<ProcessInstanceDAO> subprocesses = recursiveSubprocesses(parentProcess);
-			pdfDaoList.addAll(subprocesses);
+			// processInstanceQuery =
+			// processInstanceQuery.superProcessInstanceId(parentProcess);
+			List<String> subprocesses = recursiveSubprocesses(parentProcess);
+			for (String pp : subprocesses) {
+				ProcessInstanceDAO p = new ProcessInstanceDAO();
+				p.setId(pp);
+				// p.setName(pp.getBusinessKey());
+				// p.setName(pp.getId() + "12");
+				pdfDaoList.add(p);
+			}
 
 		}
 		return pdfDaoList;
@@ -159,7 +173,7 @@ public class ProcessList {
 		onActionFromGotoPath(index);
 	}
 
-	void onActionFromGotoPath(int index) {
+	void onActionFromGotoPath(int index) { 
 
 		if (index != -1) {
 
