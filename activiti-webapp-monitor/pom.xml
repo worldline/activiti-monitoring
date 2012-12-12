@@ -118,6 +118,7 @@
 				<artifactId>maven-jetty-plugin</artifactId>
 				<version>6.1.16</version>
 				<configuration>
+					<scanIntervalSeconds>1</scanIntervalSeconds>
 					<!-- Log to the console. -->
 					<requestLog implementation="org.mortbay.jetty.NCSARequestLog">
 						<!-- This doesn't do anything for Jetty, but is a workaround for a 
