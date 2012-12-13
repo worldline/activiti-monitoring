@@ -1,5 +1,7 @@
 package org.activiti.monitor.dao;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.tapestry5.beaneditor.NonVisual;
@@ -16,6 +18,8 @@ public class ProcessInstanceDAO {
 	Date startDate;
 	Date endDate;
 	
+	DateFormat dateFormat=new SimpleDateFormat("MM/dd/yyyy hh:mm:ss");
+	
 	public String getName() {
 		return name;
 	}
@@ -23,12 +27,14 @@ public class ProcessInstanceDAO {
 		return businessKey;
 	}
 
-	public Date getStartDate() {
-		return startDate;
+	public String getStartDate() {
+		return startDate == null ? "" : dateFormat.format(startDate);
 	}
-	public Date getEndDate() {
-		return endDate;
+
+	public String getEndDate() {
+		return endDate == null ? "" : dateFormat.format(endDate);
 	}
+	
 	public String getEndStatus() {
 		return endStatus;
 	}
