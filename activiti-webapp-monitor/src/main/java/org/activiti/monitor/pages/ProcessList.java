@@ -93,7 +93,7 @@ public class ProcessList {
 		p.setStartDate(h.getStartTime());
 		p.setEndDate(h.getEndTime());
 		p.setBusinessKey(h.getBusinessKey());
-		
+		p.setEndStatus(h.getEndActivityId());
 		
 		return p;
 		
