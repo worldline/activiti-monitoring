@@ -5,7 +5,7 @@ import org.apache.tapestry5.beaneditor.NonVisual;
 public class ProcessDefinitionDAO {
 	
 	String processDefinitionName;
-	String version;
+	int version;
 	
 	@NonVisual
 	String id;
@@ -26,11 +26,11 @@ public class ProcessDefinitionDAO {
 		this.id = id;
 	}
 
-	public String getVersion() {
+	public int getVersion() {
 		return version;
 	}
 
-	public void setVersion(String version) {
+	public void setVersion(int version) {
 		this.version = version;
 	}
 	
