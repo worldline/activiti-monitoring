@@ -133,7 +133,6 @@ public class ProcessList {
 	}
 
 	public List<Object> getProcessInstances() {
-		ProcessInstanceDAO pi = new ProcessInstanceDAO();
 		List<Object> pdfDaoList = new ArrayList<Object>();
 		
 		List<HistoricProcessInstance> historyProcessInstanceList = historyService
@@ -165,6 +164,7 @@ public class ProcessList {
 			ProcessDefinitionDAO p = new ProcessDefinitionDAO();
 			p.setProcessDefinitionName(dp.getName());
 			p.setId(dp.getId());
+			p.setVersion(dp.getVersion());
 			pdfDaoList.add(p);
 
 		}
