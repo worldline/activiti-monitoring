@@ -39,6 +39,12 @@
  					</t:if>
 	 			</td>        	
         	</tr>
+	 		<tr>
+	 			<td style="background-color: #FFFF00">
+	 				Sub Processes1:
+	 			</td>
+	 		</tr>
+        	
         	<tr>
 	    		<td>
  					<div>    
@@ -59,6 +65,26 @@
         			</div>
         		</td>
 	 		</tr>
+		<t:if test="firstLevel">
+		<p:else>	        
+	 		<tr>
+	 			<td style="background-color: #FFFF00">
+	 				Variables:
+	 			</td>
+	 		</tr>
+	 		<tr>
+	 			<td>
+ 					<div>    
+							<t:grid source="variables" row="variable" > 
+	           				</t:grid>
+        			</div>
+	 			
+	 			</td>
+	 		</tr>
+	 	</p:else>	        	        
+	 		
+	 	</t:if>
+	 		
 		</table>	        
     </body>
  </html>

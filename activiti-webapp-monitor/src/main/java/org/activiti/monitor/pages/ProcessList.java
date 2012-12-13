@@ -2,6 +2,7 @@ package org.activiti.monitor.pages;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.activiti.engine.HistoryService;
@@ -10,10 +11,10 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.runtime.ProcessInstanceQuery;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.monitor.dao.ProcessDefinitionDAO;
 import org.activiti.monitor.dao.ProcessInstanceDAO;
+import org.activiti.monitor.dao.VariableDAO;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.ioc.annotations.Inject;
@@ -29,6 +30,9 @@ public class ProcessList {
 
 	@Property
 	static String parentProcess = null;
+	
+	@Property
+	VariableDAO variable;
 
 	@Property
 	ProcessInstanceDAO processInstance;
@@ -105,6 +109,28 @@ public class ProcessList {
 		}
 		return subprocesses;
 	}
+	
+
+	public List<VariableDAO> getVariables() {
+		 List<VariableDAO> varList = new ArrayList<VariableDAO>();
+		try {
+		if (parentProcess != null) {
+			 Map<String, Object> vars = 
+					 runtimeService.getVariables(parentProcess);
+					 
+			 for (Map.Entry<String, Object> entry :vars.entrySet() ) {
+				 VariableDAO varDAO = new VariableDAO();
+				 varDAO.setName(entry.getKey());
+				 varDAO.setValue((String) entry.getValue());
+				 varList.add(varDAO);
+			 }
+		} 
+		} catch (Exception e) {
+			
+		}
+		 return varList;
+		
+	}
 
 	public List<Object> getProcessInstances() {
 		ProcessInstanceDAO pi = new ProcessInstanceDAO();
@@ -144,6 +170,7 @@ public class ProcessList {
 		}
 		return pdfDaoList;
 	}
+	
 
 	void onActionFromlistRootProcesses(String processDefinitionId) {
 		level = 1;
