@@ -12,7 +12,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.monitor.dao.ProcessDefinitionDAO;
 import org.activiti.monitor.dao.ProcessInstanceDAO;
 import org.activiti.monitor.dao.ProcessInstanceHistoryDAO;
@@ -55,6 +55,9 @@ public class ProcessList {
 	public List<String> getPath() {
 		return path;
 	}
+	
+	private static boolean hasEnded = false;
+	
 
 	@Property
 	private String pathElement;
@@ -72,7 +75,7 @@ public class ProcessList {
 	}
 
 	public boolean getHasImage() {
-		return parentProcess != null;
+		return (parentProcess != null) && (! hasEnded);
 	}
 
 
@@ -131,24 +134,22 @@ public class ProcessList {
 
 
 	public List<VariableDAO> getVariables() {
-		 List<VariableDAO> varList = new ArrayList<VariableDAO>();
-		try {
-		if (parentProcess != null) {
-			 Map<String, Object> vars = 
-					 runtimeService.getVariables(parentProcess);
-					 
-			 for (Map.Entry<String, Object> entry :vars.entrySet() ) {
-				 VariableDAO varDAO = new VariableDAO();
-				 varDAO.setName(entry.getKey());
-				 varDAO.setValue((String) entry.getValue());
-				 varList.add(varDAO);
-			 }
-		} 
-		} catch (Exception e) {
-			
+		List<VariableDAO> varList = new ArrayList<VariableDAO>();
+		if (!hasEnded) {
+			if (parentProcess != null) {
+				Map<String, Object> vars = runtimeService
+						.getVariables(parentProcess);
+
+				for (Map.Entry<String, Object> entry : vars.entrySet()) {
+					VariableDAO varDAO = new VariableDAO();
+					varDAO.setName(entry.getKey());
+					varDAO.setValue((String) entry.getValue());
+					varList.add(varDAO);
+				}
+			}
 		}
-		 return varList;
-		
+		return varList;
+
 	}
 
 	public List<Object> getProcessInstances() {
@@ -199,6 +200,9 @@ public class ProcessList {
 				.createProcessDefinitionQuery()
 				.processDefinitionId(processDefinitionId).singleResult();
 		processDefinitionName = processDefinitionList.getName();
+		adjustProcess();
+		adjustProcess();
+		
 
 	}
 
@@ -207,6 +211,7 @@ public class ProcessList {
 		if (parentProcess != null)
 			path.add(parentProcess);
 		parentProcess = processInstanceId;
+		adjustProcess();
 
 	}
 
@@ -228,6 +233,7 @@ public class ProcessList {
 			parentProcess = null;
 
 		}
+		adjustProcess();
 
 	}
 
@@ -240,7 +246,19 @@ public class ProcessList {
 		} else {
 			parentProcess = path.remove(path.size() - 1);
 		}
+		adjustProcess();
 
+	}
+	
+	void adjustProcess() {
+		if (parentProcess == null)
+			 hasEnded = false;
+		else {
+			ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(parentProcess).singleResult();
+
+			hasEnded = (processInstance  == null) ||  processInstance.isEnded();
+		}
+			
 	}
 
 
