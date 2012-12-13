@@ -9,11 +9,13 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.monitor.dao.ProcessDefinitionDAO;
 import org.activiti.monitor.dao.ProcessInstanceDAO;
+import org.activiti.monitor.dao.ProcessInstanceHistoryDAO;
 import org.activiti.monitor.dao.VariableDAO;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
@@ -110,6 +112,23 @@ public class ProcessList {
 		return subprocesses;
 	}
 	
+	public List<ProcessInstanceHistoryDAO> getHistories() {
+		ArrayList<ProcessInstanceHistoryDAO> histories = new ArrayList<ProcessInstanceHistoryDAO>();
+		if (parentProcess != null) {
+			for (HistoricActivityInstance historicProcessInstance : historyService
+					.createHistoricActivityInstanceQuery()
+					.processInstanceId(parentProcess).list()) {
+				ProcessInstanceHistoryDAO dao = new ProcessInstanceHistoryDAO();
+				dao.setName(historicProcessInstance.getActivityName());
+				dao.setStartDate(historicProcessInstance.getStartTime());
+				dao.setEndDate(historicProcessInstance.getEndTime());
+				histories.add(dao);
+			}
+		}
+		return histories;
+	}
+	
+
 
 	public List<VariableDAO> getVariables() {
 		 List<VariableDAO> varList = new ArrayList<VariableDAO>();

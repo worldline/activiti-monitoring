@@ -81,6 +81,20 @@
 	 			
 	 			</td>
 	 		</tr>
+	 		<tr>
+	 			<td style="background-color: #FFFF00">
+	 				History:
+	 			</td>
+	 		</tr>
+	 		<tr>
+	 			<td>
+ 					<div>    
+							<t:grid source="histories"  > 
+	           				</t:grid>
+        			</div>
+	 			
+	 			</td>
+	 		</tr>
 	 	</p:else>	        	        
 	 		
 	 	</t:if>
