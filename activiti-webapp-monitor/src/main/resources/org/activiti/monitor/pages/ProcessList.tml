@@ -57,7 +57,7 @@
 						<p:else>	        
 							<t:grid source="processInstances" row="processInstance" > 
 	        					<p:nameCell>
-	                				<t:actionlink t:id="processBranchInstances" context="processInstance.id">${processInstance.id}</t:actionlink>
+	                				<t:actionlink t:id="processBranchInstances" context="processInstance.id">${processInstance.name}</t:actionlink>
 	            				</p:nameCell>
 	           				</t:grid>
 			 			</p:else>	        	        

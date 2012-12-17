@@ -1,6 +1,7 @@
 package org.activiti.monitor.pages;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -66,6 +67,9 @@ public class ProcessList {
 
 	@Persist("flash")
 	List<String> path;
+	
+	@Persist
+	Map<String, String> processDefinitionNames;
 
 	public boolean getFirstLevel() {
 		return processDefinitionId == null;
@@ -80,6 +84,16 @@ public class ProcessList {
 		return (parentProcess != null) && (! hasEnded);
 	}
 
+	private String getProcessDefinitionName(String processDefinitionId) {
+		if(processDefinitionNames==null) processDefinitionNames=new HashMap<String, String>();
+		if (!processDefinitionNames.containsKey(processDefinitionId)) {
+			processDefinitionNames.put(processDefinitionId,
+					repositoryService.createProcessDefinitionQuery()
+							.processDefinitionId(processDefinitionId)
+							.singleResult().getName());
+		}
+		return processDefinitionNames.get(processDefinitionId);
+	}
 
 
 	public String getProcessDefinitionId() {
@@ -102,6 +116,7 @@ public class ProcessList {
 	ProcessInstanceDAO copyInstanceDAO(HistoricProcessInstance h) {
 		ProcessInstanceDAO p = new ProcessInstanceDAO();
 		p.setId(h.getId());
+		p.setName(getProcessDefinitionName(h.getProcessDefinitionId()));
 		p.setStartDate(h.getStartTime());
 		p.setEndDate(h.getEndTime());
 		p.setBusinessKey(h.getBusinessKey());
