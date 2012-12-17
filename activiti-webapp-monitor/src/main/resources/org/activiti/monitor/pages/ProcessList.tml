@@ -49,17 +49,19 @@
 	    		<td>
  					<div>    
 						<t:if test="firstLevel">
-	        				<t:grid source="processDefinitions" row="processDefinition">
-	        					<p:processDefinitionNameCell>
-	                			<t:actionlink t:id="listRootProcesses" context="processDefinition.id">${processDefinition.processDefinitionName}</t:actionlink>
-	            				</p:processDefinitionNameCell>
-	        				</t:grid>
-						<p:else>	        
-							<t:grid source="processInstances" row="processInstance" > 
+		        			<table t:type="jquery/datatable" t:source="processDefinitions" rowsPerPage="5" 
+	                 				t:row="processDefinition">
+	                 	        <p:processDefinitionNameCell>
+		                			<t:actionlink t:id="listRootProcesses" context="processDefinition.id">${processDefinition.processDefinitionName}</t:actionlink>
+		            			</p:processDefinitionNameCell>
+							</table> 
+						<p:else>
+			      			<table t:type="jquery/datatable" t:source="processInstances" rowsPerPage="5"
+			      				t:row="processInstance"> 
 	        					<p:nameCell>
 	                				<t:actionlink t:id="processBranchInstances" context="processInstance.id">${processInstance.name}</t:actionlink>
 	            				</p:nameCell>
-	           				</t:grid>
+	           				</table>
 			 			</p:else>	        	        
         				</t:if>
         			</div>
@@ -75,6 +77,7 @@
 	 		<tr>
 	 			<td>
  					<div>    
+ 					
 							<t:grid source="variables" row="variable" > 
 	           				</t:grid>
         			</div>
