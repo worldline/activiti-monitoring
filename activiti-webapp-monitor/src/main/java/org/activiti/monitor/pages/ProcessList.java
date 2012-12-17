@@ -31,7 +31,8 @@ public class ProcessList {
 	ProcessDefinitionDAO processDefinition;
 
 	@Property
-	static String parentProcess = null;
+	@Persist
+	String parentProcess ;
 	
 	@Property
 	VariableDAO variable;
@@ -56,14 +57,15 @@ public class ProcessList {
 		return path;
 	}
 	
-	private static boolean hasEnded = false;
+	@Persist
+	private boolean hasEnded;
 	
 
 	@Property
 	private String pathElement;
 
 	@Persist("flash")
-	static List<String> path = new ArrayList<String>();
+	List<String> path;
 
 	public boolean getFirstLevel() {
 		return processDefinitionId == null;
@@ -88,9 +90,14 @@ public class ProcessList {
 		return processDefinitionName;
 	}
 
-	static int level = 0;
-	static String processDefinitionId = null;
-	static String processDefinitionName = null;
+	@Persist
+	int level ;
+	
+	@Persist
+	String processDefinitionId ;
+	
+	@Persist
+	String processDefinitionName ;
 
 	ProcessInstanceDAO copyInstanceDAO(HistoricProcessInstance h) {
 		ProcessInstanceDAO p = new ProcessInstanceDAO();
@@ -208,8 +215,10 @@ public class ProcessList {
 
 	void onActionFromProcessBranchInstances(String processInstanceId) {
 
-		if (parentProcess != null)
+		if (parentProcess != null) {
+			if(path==null) path=new ArrayList<String>();
 			path.add(parentProcess);
+		}
 		parentProcess = processInstanceId;
 		adjustProcess();
 
@@ -223,13 +232,13 @@ public class ProcessList {
 
 	void onActionFromGotoPath(int index) {
 
-		if (index != -1) {
+		if (index != -1 && path !=null) {
 
 			parentProcess = (String) path.toArray()[index];
 			for (int i = path.size() - 1; i >= index; i--)
 				path.remove(i);
 		} else {
-			path.clear();
+			path=null;
 			parentProcess = null;
 
 		}
@@ -238,7 +247,7 @@ public class ProcessList {
 	}
 
 	void onActionFromUp() {
-		if (path.size() == 0) {
+		if (path==null || path.size() == 0) {
 			if (parentProcess == null)
 				processDefinitionId = null;
 			else
