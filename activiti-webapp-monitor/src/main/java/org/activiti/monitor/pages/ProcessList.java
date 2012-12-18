@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.logging.Logger;
 
 import org.activiti.engine.HistoryService;
@@ -66,7 +67,7 @@ public class ProcessList {
 	private String pathElement;
 
 	@Persist
-	List<String> path;
+	Stack<String> path;
 	
 	@Persist
 	Map<String, String> processDefinitionNames;
@@ -231,7 +232,7 @@ public class ProcessList {
 	void onActionFromProcessBranchInstances(String processInstanceId) {
 
 		if (parentProcess != null) {
-			if(path==null) path=new ArrayList<String>();
+			if(path==null) path=new Stack<String>();
 			path.add(parentProcess);
 		}
 		parentProcess = processInstanceId;
@@ -249,9 +250,9 @@ public class ProcessList {
 
 		if (index != -1 && path !=null) {
 
-			parentProcess = (String) path.toArray()[index];
-			for (int i = path.size() - 1; i >= index; i--)
-				path.remove(i);
+			parentProcess = path.pop();
+			for (int i = path.size() - 2; i >= index; i--)
+				path.pop();
 		} else {
 			path=null;
 			parentProcess = null;
@@ -268,7 +269,7 @@ public class ProcessList {
 			else
 				parentProcess = null;
 		} else {
-			parentProcess = path.remove(path.size() - 1);
+			parentProcess = path.pop();
 		}
 		adjustProcess();
 
