@@ -35,7 +35,7 @@
         	<tr>
         		<td align="center">
         			<t:if test="hasImage">
- 						<div align="center" position="absolute"> <img src="/activiti-webapp-monitor/processImage?instanceId=${parent}"/> </div>
+ 						<div align="center" position="absolute"> <img src="/activiti-webapp-monitor/processImage?instanceId=${parent.id}"/> </div>
  					</t:if>
 	 			</td>        	
         	</tr>

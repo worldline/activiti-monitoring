@@ -18,6 +18,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.monitor.dao.ProcessDefinitionDAO;
 import org.activiti.monitor.dao.ProcessInstanceDAO;
 import org.activiti.monitor.dao.ProcessInstanceHistoryDAO;
+import org.activiti.monitor.dao.ProcessPath;
 import org.activiti.monitor.dao.VariableDAO;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
@@ -34,7 +35,7 @@ public class ProcessList {
 
 	@Property
 	@Persist
-	String parentProcess ;
+	ProcessPath parentProcess ;
 	
 	@Property
 	VariableDAO variable;
@@ -55,7 +56,7 @@ public class ProcessList {
 	private ProcessEngine processEngine;
 
 
-	public List<String> getPath() {
+	public List<ProcessPath> getPath() {
 		return path;
 	}
 	
@@ -64,10 +65,10 @@ public class ProcessList {
 	
 
 	@Property
-	private String pathElement;
+	private ProcessPath pathElement;
 
 	@Persist
-	Stack<String> path;
+	Stack<ProcessPath> path;
 	
 	@Persist
 	Map<String, String> processDefinitionNames;
@@ -76,13 +77,12 @@ public class ProcessList {
 		return processDefinitionId == null;
 	}
 
-	public String getParent() {
+	public ProcessPath getParent() {
 		return parentProcess;
-
 	}
 
 	public boolean getHasImage() {
-		return (parentProcess != null) && (! hasEnded);
+		return (parentProcess != null)  && (! hasEnded);
 	}
 
 	private String getProcessDefinitionName(String processDefinitionId) {
@@ -143,7 +143,7 @@ public class ProcessList {
 		if (parentProcess != null) {
 			for (HistoricActivityInstance historicProcessInstance : historyService
 					.createHistoricActivityInstanceQuery()
-					.processInstanceId(parentProcess).list()) {
+					.processInstanceId(parentProcess.getId()).list()) {
 				ProcessInstanceHistoryDAO dao = new ProcessInstanceHistoryDAO();
 				dao.setName(historicProcessInstance.getActivityName());
 				dao.setStartDate(historicProcessInstance.getStartTime());
@@ -161,7 +161,7 @@ public class ProcessList {
 		if (!hasEnded) {
 			if (parentProcess != null) {
 				Map<String, Object> vars = runtimeService
-						.getVariables(parentProcess);
+						.getVariables(parentProcess.getId());
 
 				for (Map.Entry<String, Object> entry : vars.entrySet()) {
 					VariableDAO varDAO = new VariableDAO();
@@ -190,7 +190,7 @@ public class ProcessList {
 			}
 
 		} else {
-			List<ProcessInstanceDAO> subprocesses = recursiveSubprocesses(parentProcess);
+			List<ProcessInstanceDAO> subprocesses = recursiveSubprocesses(parentProcess.getId());
 			pdfDaoList.addAll(subprocesses);
 
 		}
@@ -232,12 +232,19 @@ public class ProcessList {
 	void onActionFromProcessBranchInstances(String processInstanceId) {
 
 		if (parentProcess != null) {
-			if(path==null) path=new Stack<String>();
+			if(path==null) path=new Stack<ProcessPath>();
 			path.add(parentProcess);
 		}
-		parentProcess = processInstanceId;
+		parentProcess = new ProcessPath(processInstanceId, getDisplay(processInstanceId));
 		adjustProcess();
 
+	}
+
+	
+	private String getDisplay(String processInstanceId) {
+		String definition=runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult().getProcessDefinitionId();
+		String name=getProcessDefinitionName(definition);
+		return String.format("%s - %s", name, processInstanceId);
 	}
 
 	// TODO: should be changed to eventLink
@@ -279,7 +286,7 @@ public class ProcessList {
 		if (parentProcess == null)
 			 hasEnded = false;
 		else {
-			ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(parentProcess).singleResult();
+			ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(parentProcess.getId()).singleResult();
 
 			hasEnded = (processInstance  == null) ||  processInstance.isEnded();
 		}
