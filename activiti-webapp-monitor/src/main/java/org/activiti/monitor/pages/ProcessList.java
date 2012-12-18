@@ -241,10 +241,12 @@ public class ProcessList {
 	}
 
 	
-	private String getDisplay(String processInstanceId) {
-		String definition=runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult().getProcessDefinitionId();
-		String name=getProcessDefinitionName(definition);
-		return String.format("%s - %s", name, processInstanceId);
+	private String getDisplay(String id) {
+		String definitionId = getFirstLevel() ? id 
+				: runtimeService.createProcessInstanceQuery().processInstanceId(id)
+				.singleResult().getProcessDefinitionId();
+		String name=getProcessDefinitionName(definitionId);
+		return String.format("%s - %s", name, id);
 	}
 
 	// TODO: should be changed to eventLink
