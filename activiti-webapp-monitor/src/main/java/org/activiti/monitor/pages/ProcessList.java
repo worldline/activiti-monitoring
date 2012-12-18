@@ -65,7 +65,7 @@ public class ProcessList {
 	@Property
 	private String pathElement;
 
-	@Persist("flash")
+	@Persist
 	List<String> path;
 	
 	@Persist
