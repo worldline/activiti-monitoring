@@ -116,7 +116,7 @@ public class ProcessList {
 	ProcessInstanceDAO copyInstanceDAO(HistoricProcessInstance h) {
 		ProcessInstanceDAO p = new ProcessInstanceDAO();
 		p.setId(h.getId());
-		p.setName(getProcessDefinitionName(h.getProcessDefinitionId()));
+		p.setName(getProcessDefinitionName(h.getProcessDefinitionId())+" - "+h.getId());
 		p.setStartDate(h.getStartTime());
 		p.setEndDate(h.getEndTime());
 		p.setBusinessKey(h.getBusinessKey());
