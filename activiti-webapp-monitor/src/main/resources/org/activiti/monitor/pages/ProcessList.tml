@@ -57,7 +57,7 @@
 							</table> 
 						<p:else>
 			      			<table t:type="jquery/datatable" t:source="processInstances" rowsPerPage="5"
-			      				t:row="processInstance"> 
+			      				t:row="processInstance" model="instanceModel"> 
 	        					<p:nameCell>
 	                				<t:actionlink t:id="processBranchInstances" context="processInstance.id">${processInstance.name}</t:actionlink>
 	            				</p:nameCell>

@@ -20,9 +20,12 @@ import org.activiti.monitor.dao.ProcessInstanceDAO;
 import org.activiti.monitor.dao.ProcessInstanceHistoryDAO;
 import org.activiti.monitor.dao.ProcessPath;
 import org.activiti.monitor.dao.VariableDAO;
+import org.apache.tapestry5.ComponentResources;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.services.BeanModelSource;
+import org.apache.tapestry5.beaneditor.BeanModel;
 
 public class ProcessList {
 	protected static final Logger LOGGER = Logger.getLogger(ProcessList.class
@@ -30,6 +33,12 @@ public class ProcessList {
 
 	// TODO: should be deleted, uses processDefinition instead
 
+	@Inject
+    private BeanModelSource beanModelSource;
+
+    @Inject
+    private ComponentResources resources;
+    
 	@Property
 	ProcessDefinitionDAO processDefinition;
 
@@ -76,6 +85,7 @@ public class ProcessList {
 	public boolean getFirstLevel() {
 		return processDefinitionId == null;
 	}
+	
 
 	public ProcessPath getParent() {
 		return parentProcess;
@@ -85,6 +95,12 @@ public class ProcessList {
 		return (parentProcess != null)  && (! hasEnded);
 	}
 
+	 public BeanModel getInstanceModel() {
+         @SuppressWarnings("deprecation")
+		BeanModel model = beanModelSource.create(ProcessInstanceDAO.class, false, resources.getMessages());
+         
+         return model;
+     }
 	private String getProcessDefinitionName(String processDefinitionId) {
 		if(processDefinitionNames==null) processDefinitionNames=new HashMap<String, String>();
 		if (!processDefinitionNames.containsKey(processDefinitionId)) {
@@ -175,6 +191,7 @@ public class ProcessList {
 
 	}
 
+	
 	public List<Object> getProcessInstances() {
 		List<Object> pdfDaoList = new ArrayList<Object>();
 		
