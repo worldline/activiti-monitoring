@@ -36,7 +36,7 @@ public class ProcessInstanceDAO {
 	}
 	
 	public String getEndStatus() {
-		return endStatus;
+		return endStatus==null ? "":endStatus;
 	}
 
 	

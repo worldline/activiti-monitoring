@@ -49,19 +49,23 @@
 	    		<td>
  					<div>    
 						<t:if test="firstLevel">
-		        			<t:grid  t:source="processDefinitions" rowsPerPage="5" 
+		        			<table t:type="jquery/datatable"  t:source="processDefinitions" rowsPerPage="5"
 	                 				t:row="processDefinition">
 	                 	        <p:processDefinitionNameCell>
 		                			<t:actionlink t:id="listRootProcesses" context="processDefinition.id">${processDefinition.processDefinitionName}</t:actionlink>
 		            			</p:processDefinitionNameCell>
-							</t:grid> 
+							</table> 
 						<p:else>
-			      			<t:grid t:source="processInstances" rowsPerPage="5"
+			      			<table t:type="jquery/datatable" t:source="processInstances" rowsPerPage="5" t:mode="true"
 			      				t:row="processInstance" model="instanceModel"> 
-	        					<!--p:nameCell>
+	        					<p:nameCell>
 	                				<t:actionlink t:id="processBranchInstances" context="processInstance.id">${processInstance.name}</t:actionlink>
-	            				</p:nameCell-->
-	           				</t:grid>
+	            				</p:nameCell>
+	            				<!-- workaround for a Tapestry-JQuery bug (NPE) -->
+	            				<p:businessKeyCell>
+	                				${processInstance.businessKey}
+	            				</p:businessKeyCell>
+	           				</table>
 			 			</p:else>	        	        
         				</t:if>
         			</div>

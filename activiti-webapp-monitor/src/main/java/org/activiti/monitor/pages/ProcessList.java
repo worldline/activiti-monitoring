@@ -17,12 +17,15 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.monitor.dao.ProcessDefinitionDAO;
 import org.activiti.monitor.dao.ProcessInstanceDAO;
+import org.activiti.monitor.dao.ProcessInstanceDataSource;
 import org.activiti.monitor.dao.ProcessInstanceHistoryDAO;
 import org.activiti.monitor.dao.ProcessPath;
 import org.activiti.monitor.dao.VariableDAO;
 import org.apache.tapestry5.ComponentResources;
+import org.apache.tapestry5.annotations.Environmental;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
+import org.apache.tapestry5.grid.GridDataSource;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.services.BeanModelSource;
 import org.apache.tapestry5.beaneditor.BeanModel;
@@ -50,6 +53,7 @@ public class ProcessList {
 	VariableDAO variable;
 
 	@Property
+	@Environmental
 	ProcessInstanceDAO processInstance;
 
 	@Inject
@@ -130,7 +134,7 @@ public class ProcessList {
 	@Persist
 	String processDefinitionName ;
 
-	ProcessInstanceDAO copyInstanceDAO(HistoricProcessInstance h) {
+private	ProcessInstanceDAO copyInstanceDAO(HistoricProcessInstance h) {
 		ProcessInstanceDAO p = new ProcessInstanceDAO();
 		p.setId(h.getId());
 		p.setName(getProcessDefinitionName(h.getProcessDefinitionId())+" - "+h.getId());
@@ -192,27 +196,11 @@ public class ProcessList {
 	}
 
 	
-	public List<Object> getProcessInstances() {
-		List<Object> pdfDaoList = new ArrayList<Object>();
-		
-		List<HistoricProcessInstance> historyProcessInstanceList = historyService
-				.createHistoricProcessInstanceQuery().processDefinitionId(processDefinitionId).list();
-		
-		if (parentProcess == null) {
-			
-			for (HistoricProcessInstance processHistoryInstance : historyProcessInstanceList) {
-				
-				pdfDaoList.add(copyInstanceDAO(processHistoryInstance));
-
-			}
-
-		} else {
-			List<ProcessInstanceDAO> subprocesses = recursiveSubprocesses(parentProcess.getId());
-			pdfDaoList.addAll(subprocesses);
-
-		}
-		return pdfDaoList;
+	public GridDataSource getProcessInstances(){
+		return new ProcessInstanceDataSource(repositoryService, historyService,parentProcess, processDefinitionId);
 	}
+	
+		
 
 	public List<Object> getProcessDefinitions() {
 
