@@ -49,19 +49,19 @@
 	    		<td>
  					<div>    
 						<t:if test="firstLevel">
-		        			<table t:type="jquery/datatable" t:source="processDefinitions" rowsPerPage="5" 
+		        			<t:grid  t:source="processDefinitions" rowsPerPage="5" 
 	                 				t:row="processDefinition">
 	                 	        <p:processDefinitionNameCell>
 		                			<t:actionlink t:id="listRootProcesses" context="processDefinition.id">${processDefinition.processDefinitionName}</t:actionlink>
 		            			</p:processDefinitionNameCell>
-							</table> 
+							</t:grid> 
 						<p:else>
-			      			<table t:type="jquery/datatable" t:source="processInstances" rowsPerPage="5"
+			      			<t:grid t:source="processInstances" rowsPerPage="5"
 			      				t:row="processInstance" model="instanceModel"> 
-	        					<p:nameCell>
+	        					<!--p:nameCell>
 	                				<t:actionlink t:id="processBranchInstances" context="processInstance.id">${processInstance.name}</t:actionlink>
-	            				</p:nameCell>
-	           				</table>
+	            				</p:nameCell-->
+	           				</t:grid>
 			 			</p:else>	        	        
         				</t:if>
         			</div>
