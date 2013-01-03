@@ -1,4 +1,3 @@
 drop database activiti;
 create database activiti;
-grant all on activiti.* to activiti@localhost;
-
+GRANT ALL PRIVILEGES  ON activiti.* 	TO 'activiti'@'%' 		IDENTIFIED BY 'activiti' 		WITH GRANT OPTION;

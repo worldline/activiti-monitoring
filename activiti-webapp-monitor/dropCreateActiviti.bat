@@ -1,0 +1,1 @@
+mysql -h localhost --user=root --password=kermit < recreate_activiti.sql
