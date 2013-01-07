@@ -3,6 +3,7 @@ package org.activiti.monitor.dao;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -153,9 +154,14 @@ public class ProcessInstanceDataSource implements GridDataSource {
 				.createHistoricProcessInstanceQuery();
 		query = query.processDefinitionId(processDefinitionId);
 		String businessKey = searchParameters.getBusinessKey();
-		if(isDefined(businessKey)){
+		if(isDefined(businessKey))
 			query=query.processInstanceBusinessKey(businessKey);
-		}
+		Date start = searchParameters.getStart();
+		if(start!=null)
+			query=query.startDateOn(start);
+		Date end = searchParameters.getEnd();
+		if(end!=null)
+			query=query.finishDateOn(end);
 		return query;
 	}
 

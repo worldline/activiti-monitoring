@@ -18,7 +18,7 @@ public class ProcessInstanceDAO {
 	Date startDate;
 	Date endDate;
 	
-	DateFormat dateFormat=new SimpleDateFormat("MM/dd/yyyy hh:mm:ss");
+	DateFormat dateFormat=new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 	
 	public String getName() {
 		return name;

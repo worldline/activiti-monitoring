@@ -1,6 +1,7 @@
 package org.activiti.monitor.pages;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,15 +24,15 @@ import org.activiti.monitor.dao.ProcessPath;
 import org.activiti.monitor.dao.SearchParameters;
 import org.activiti.monitor.dao.VariableDAO;
 import org.apache.tapestry5.ComponentResources;
-import org.apache.tapestry5.annotations.Component;
 import org.apache.tapestry5.annotations.Environmental;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
+import org.apache.tapestry5.beaneditor.BeanModel;
 import org.apache.tapestry5.grid.GridDataSource;
 import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.json.JSONObject;
+import org.apache.tapestry5.services.AssetSource;
 import org.apache.tapestry5.services.BeanModelSource;
-import org.apache.tapestry5.beaneditor.BeanModel;
-import org.got5.tapestry5.jquery.components.DataTable;
 
 public class ProcessList {
 	protected static final Logger LOGGER = Logger.getLogger(ProcessList.class
@@ -203,7 +204,7 @@ private	ProcessInstanceDAO copyInstanceDAO(HistoricProcessInstance h) {
 
 	
 	public GridDataSource getProcessInstances(){
-		SearchParameters searchParameters = new SearchParameters(businessKeySearch);
+		SearchParameters searchParameters = new SearchParameters(businessKeySearch, startDateSearch, endDateSearch);
 		return new ProcessInstanceDataSource(repositoryService, historyService,parentProcess, processDefinitionId, searchParameters);
 	}
 	
@@ -307,5 +308,14 @@ private	ProcessInstanceDAO copyInstanceDAO(HistoricProcessInstance h) {
 			
 	}
 
-
+	@Property
+	@Persist
+	private Date startDateSearch;
+	@Property
+	@Persist
+	private Date endDateSearch;
+	
+	public JSONObject getDateOptions(){
+		return new JSONObject().put("dateFormat", "mm/dd/yy");
+	}
 }
