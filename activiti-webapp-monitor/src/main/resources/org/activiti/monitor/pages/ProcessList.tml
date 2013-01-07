@@ -1,4 +1,4 @@
-<html t:type="Layout"  t:title="Test Title" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd"   xmlns:p="tapestry:parameter">
+<html t:type="Layout"  t:title="Process List" xmlns:t="http://tapestry.apache.org/schema/tapestry_5_1_0.xsd"   xmlns:p="tapestry:parameter">
 
 	<style>
 	 #whatever div {
@@ -7,9 +7,6 @@
 	  width: 30%;
 	}
 	</style>
-	<head>
-        <title>Process List</title>
-    </head>
     <body>
     
     	<table border="0">
@@ -39,25 +36,45 @@
  					</t:if>
 	 			</td>        	
         	</tr>
+			<t:if test="firstLevel">
 	 		<tr>
 	 			<td style="background-color: #FFFF00">
-	 				Sub Processes1:
+	 				Process definitions :
 	 			</td>
 	 		</tr>
-        	
         	<tr>
 	    		<td>
- 					<div>    
-						<t:if test="firstLevel">
 		        			<table t:type="jquery/datatable"  t:source="processDefinitions" rowsPerPage="5"
-	                 				t:row="processDefinition">
+	                 				t:row="processDefinition"  >
 	                 	        <p:processDefinitionNameCell>
 		                			<t:actionlink t:id="listRootProcesses" context="processDefinition.id">${processDefinition.processDefinitionName}</t:actionlink>
 		            			</p:processDefinitionNameCell>
 							</table> 
-						<p:else>
+						</td>
+	 		</tr>
+			<p:else> 
+			<tr>
+	 			<td style="background-color: #FFFF00">
+	 				Search :
+	 			</td>
+	 		</tr>
+	 		<tr>
+	 			<td>
+	 						<t:form t:id="searchForm">	
+ 								<t:textfield t:id="businessKeySearch" t:mixins="kawwa2/tipsy" 
+ 									title="Search on Business Key" />
+ 							</t:form>
+	 			</td>
+	 		</tr>
+	 		<tr>
+	 			<td style="background-color: #FFFF00">
+	 				Processes
+	 			</td>
+	 		</tr>
+	 		<tr>
+	 			<td>
 			      			<table t:type="jquery/datatable" t:source="processInstances" rowsPerPage="5" t:mode="true"
-			      				t:row="processInstance" model="instanceModel"> 
+			      				t:row="processInstance" model="instanceModel" > 
 	        					<p:nameCell>
 	                				<t:actionlink t:id="processBranchInstances" context="processInstance.id">${processInstance.name}</t:actionlink>
 	            				</p:nameCell>
@@ -66,12 +83,11 @@
 	                				${processInstance.businessKey}
 	            				</p:businessKeyCell>
 	           				</table>
-			 			</p:else>	        	        
-        				</t:if>
-        			</div>
-        		</td>
+	 			</td>
 	 		</tr>
-		<t:if test="firstLevel">
+ 			</p:else>	        	        
+			</t:if>
+        <t:if test="firstLevel">
 		<p:else>	        
 	 		<tr>
 	 			<td style="background-color: #FFFF00">

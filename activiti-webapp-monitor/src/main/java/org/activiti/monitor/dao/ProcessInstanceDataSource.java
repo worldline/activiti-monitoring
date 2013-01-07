@@ -30,14 +30,17 @@ public class ProcessInstanceDataSource implements GridDataSource {
 	private List<ProcessInstanceDAO> pdfDaoList;
 	private int startIndex;
 	private String name;
+	private final SearchParameters searchParameters;
 
 	public ProcessInstanceDataSource(RepositoryService repositoryService,
 			HistoryService historyService, ProcessPath parentProcess,
-			String processDefinitionId) {
+			String processDefinitionId,
+			SearchParameters searchParameters) {
 		this.repositoryService = repositoryService;
 		this.historyService = historyService;
 		this.parentProcess = parentProcess;
 		this.processDefinitionId = processDefinitionId;
+		this.searchParameters = searchParameters;
 	}
 
 	@Override
@@ -136,6 +139,7 @@ public class ProcessInstanceDataSource implements GridDataSource {
 				break;
 			}
 		}
+		
 		List<HistoricProcessInstance> historyProcessInstanceList = query
 				.listPage(startIndex, endIndex - startIndex + 1);
 
@@ -148,6 +152,10 @@ public class ProcessInstanceDataSource implements GridDataSource {
 		HistoricProcessInstanceQuery query = historyService
 				.createHistoricProcessInstanceQuery();
 		query = query.processDefinitionId(processDefinitionId);
+		String businessKey = searchParameters.getBusinessKey();
+		if(isDefined(businessKey)){
+			query=query.processInstanceBusinessKey(businessKey);
+		}
 		return query;
 	}
 
@@ -220,5 +228,9 @@ public class ProcessInstanceDataSource implements GridDataSource {
 			}
 			throw new IllegalArgumentException(col);
 		}
+	}
+	
+	private static boolean isDefined(String value){
+		return value != null && value.trim().length() > 0;
 	}
 }

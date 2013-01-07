@@ -20,8 +20,10 @@ import org.activiti.monitor.dao.ProcessInstanceDAO;
 import org.activiti.monitor.dao.ProcessInstanceDataSource;
 import org.activiti.monitor.dao.ProcessInstanceHistoryDAO;
 import org.activiti.monitor.dao.ProcessPath;
+import org.activiti.monitor.dao.SearchParameters;
 import org.activiti.monitor.dao.VariableDAO;
 import org.apache.tapestry5.ComponentResources;
+import org.apache.tapestry5.annotations.Component;
 import org.apache.tapestry5.annotations.Environmental;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
@@ -29,6 +31,7 @@ import org.apache.tapestry5.grid.GridDataSource;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.services.BeanModelSource;
 import org.apache.tapestry5.beaneditor.BeanModel;
+import org.got5.tapestry5.jquery.components.DataTable;
 
 public class ProcessList {
 	protected static final Logger LOGGER = Logger.getLogger(ProcessList.class
@@ -73,10 +76,13 @@ public class ProcessList {
 		return path;
 	}
 	
+	@Property
+	@Persist
+	private String businessKeySearch;
+	
 	@Persist
 	private boolean hasEnded;
 	
-
 	@Property
 	private ProcessPath pathElement;
 
@@ -197,7 +203,8 @@ private	ProcessInstanceDAO copyInstanceDAO(HistoricProcessInstance h) {
 
 	
 	public GridDataSource getProcessInstances(){
-		return new ProcessInstanceDataSource(repositoryService, historyService,parentProcess, processDefinitionId);
+		SearchParameters searchParameters = new SearchParameters(businessKeySearch);
+		return new ProcessInstanceDataSource(repositoryService, historyService,parentProcess, processDefinitionId, searchParameters);
 	}
 	
 		
@@ -299,7 +306,6 @@ private	ProcessInstanceDAO copyInstanceDAO(HistoricProcessInstance h) {
 		}
 			
 	}
-
 
 
 }

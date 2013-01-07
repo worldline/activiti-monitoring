@@ -24,7 +24,7 @@ import org.activiti.engine.task.Task;
 
 public class FillData {
 	 final private int N_PROCESSES = 1 ;
-	 final private int N_INSTANCES = 50 ;
+	 final private int N_INSTANCES = 500 ;
 	 final private static int level1Percent = 80;
 	 final private static int level2Percent = 60;
 	 final private static int level3Percent = 60;
