@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.logging.Logger;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
@@ -31,7 +32,6 @@ import org.apache.tapestry5.beaneditor.BeanModel;
 import org.apache.tapestry5.grid.GridDataSource;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.json.JSONObject;
-import org.apache.tapestry5.services.AssetSource;
 import org.apache.tapestry5.services.BeanModelSource;
 
 public class ProcessList {
@@ -41,18 +41,18 @@ public class ProcessList {
 	// TODO: should be deleted, uses processDefinition instead
 
 	@Inject
-    private BeanModelSource beanModelSource;
+	private BeanModelSource beanModelSource;
 
-    @Inject
-    private ComponentResources resources;
-    
+	@Inject
+	private ComponentResources resources;
+
 	@Property
 	ProcessDefinitionDAO processDefinition;
 
 	@Property
 	@Persist
-	ProcessPath parentProcess ;
-	
+	ProcessPath parentProcess;
+
 	@Property
 	VariableDAO variable;
 
@@ -72,48 +72,49 @@ public class ProcessList {
 	@Inject
 	private ProcessEngine processEngine;
 
-
 	public List<ProcessPath> getPath() {
 		return path;
 	}
-	
+
 	@Property
 	@Persist
 	private String businessKeySearch;
-	
+
 	@Persist
 	private boolean hasEnded;
-	
+
 	@Property
 	private ProcessPath pathElement;
 
 	@Persist
 	Stack<ProcessPath> path;
-	
+
 	@Persist
 	Map<String, String> processDefinitionNames;
 
 	public boolean getFirstLevel() {
 		return processDefinitionId == null;
 	}
-	
 
 	public ProcessPath getParent() {
 		return parentProcess;
 	}
 
 	public boolean getHasImage() {
-		return (parentProcess != null)  && (! hasEnded);
+		return (parentProcess != null) && (!hasEnded);
 	}
 
-	 public BeanModel getInstanceModel() {
-         @SuppressWarnings("deprecation")
-		BeanModel model = beanModelSource.create(ProcessInstanceDAO.class, false, resources.getMessages());
-         
-         return model;
-     }
+	public BeanModel getInstanceModel() {
+		@SuppressWarnings("deprecation")
+		BeanModel model = beanModelSource.create(ProcessInstanceDAO.class,
+				false, resources.getMessages());
+
+		return model;
+	}
+
 	private String getProcessDefinitionName(String processDefinitionId) {
-		if(processDefinitionNames==null) processDefinitionNames=new HashMap<String, String>();
+		if (processDefinitionNames == null)
+			processDefinitionNames = new HashMap<String, String>();
 		if (!processDefinitionNames.containsKey(processDefinitionId)) {
 			processDefinitionNames.put(processDefinitionId,
 					repositoryService.createProcessDefinitionQuery()
@@ -122,7 +123,6 @@ public class ProcessList {
 		}
 		return processDefinitionNames.get(processDefinitionId);
 	}
-
 
 	public String getProcessDefinitionId() {
 		return processDefinitionId;
@@ -133,38 +133,41 @@ public class ProcessList {
 	}
 
 	@Persist
-	int level ;
-	
-	@Persist
-	String processDefinitionId ;
-	
-	@Persist
-	String processDefinitionName ;
+	int level;
 
-private	ProcessInstanceDAO copyInstanceDAO(HistoricProcessInstance h) {
+	@Persist
+	String processDefinitionId;
+
+	@Persist
+	String processDefinitionName;
+
+	private ProcessInstanceDAO copyInstanceDAO(HistoricProcessInstance h) {
 		ProcessInstanceDAO p = new ProcessInstanceDAO();
 		p.setId(h.getId());
-		p.setName(getProcessDefinitionName(h.getProcessDefinitionId())+" - "+h.getId());
+		p.setName(getProcessDefinitionName(h.getProcessDefinitionId()) + " - "
+				+ h.getId());
 		p.setStartDate(h.getStartTime());
 		p.setEndDate(h.getEndTime());
 		p.setBusinessKey(h.getBusinessKey());
 		p.setEndStatus(h.getEndActivityId());
-		
+
 		return p;
-		
+
 	}
+
 	public List<ProcessInstanceDAO> recursiveSubprocesses(String parentProcessId) {
 		List<ProcessInstanceDAO> subprocesses = new ArrayList<ProcessInstanceDAO>();
 		for (HistoricProcessInstance historicProcessInstance : historyService
 				.createHistoricProcessInstanceQuery()
 				.superProcessInstanceId(parentProcessId).list()) {
-			
-			subprocesses.add(copyInstanceDAO(historicProcessInstance) );
-			subprocesses.addAll(recursiveSubprocesses(historicProcessInstance.getId()));
+
+			subprocesses.add(copyInstanceDAO(historicProcessInstance));
+			subprocesses.addAll(recursiveSubprocesses(historicProcessInstance
+					.getId()));
 		}
 		return subprocesses;
 	}
-	
+
 	public List<ProcessInstanceHistoryDAO> getHistories() {
 		ArrayList<ProcessInstanceHistoryDAO> histories = new ArrayList<ProcessInstanceHistoryDAO>();
 		if (parentProcess != null) {
@@ -180,35 +183,34 @@ private	ProcessInstanceDAO copyInstanceDAO(HistoricProcessInstance h) {
 		}
 		return histories;
 	}
-	
-
 
 	public List<VariableDAO> getVariables() {
 		List<VariableDAO> varList = new ArrayList<VariableDAO>();
-		if (!hasEnded) {
-			if (parentProcess != null) {
-				Map<String, Object> vars = runtimeService
-						.getVariables(parentProcess.getId());
-
-				for (Map.Entry<String, Object> entry : vars.entrySet()) {
-					VariableDAO varDAO = new VariableDAO();
-					varDAO.setName(entry.getKey());
-					varDAO.setValue((String) entry.getValue());
-					varList.add(varDAO);
+		try {
+			if (!hasEnded) {
+				if (parentProcess != null) {
+					Map<String, Object> vars = runtimeService
+							.getVariables(parentProcess.getId());
+					for (Map.Entry<String, Object> entry : vars.entrySet()) {
+						varList.add(new VariableDAO(entry.getKey(), entry
+								.getValue().toString()));
+					}
 				}
 			}
+		} catch (ActivitiException e) {
+			varList.add(new VariableDAO("error listing variables", e
+					.getMessage()));
 		}
 		return varList;
 
 	}
 
-	
-	public GridDataSource getProcessInstances(){
-		SearchParameters searchParameters = new SearchParameters(businessKeySearch, startDateSearch, endDateSearch);
-		return new ProcessInstanceDataSource(repositoryService, historyService,parentProcess, processDefinitionId, searchParameters);
+	public GridDataSource getProcessInstances() {
+		SearchParameters searchParameters = new SearchParameters(
+				businessKeySearch, startDateSearch, endDateSearch);
+		return new ProcessInstanceDataSource(repositoryService, historyService,
+				parentProcess, processDefinitionId, searchParameters);
 	}
-	
-		
 
 	public List<Object> getProcessDefinitions() {
 
@@ -226,7 +228,6 @@ private	ProcessInstanceDAO copyInstanceDAO(HistoricProcessInstance h) {
 		}
 		return pdfDaoList;
 	}
-	
 
 	void onActionFromlistRootProcesses(String processDefinitionId) {
 		level = 1;
@@ -238,27 +239,27 @@ private	ProcessInstanceDAO copyInstanceDAO(HistoricProcessInstance h) {
 		processDefinitionName = processDefinitionList.getName();
 		adjustProcess();
 		adjustProcess();
-		
 
 	}
 
 	void onActionFromProcessBranchInstances(String processInstanceId) {
 
 		if (parentProcess != null) {
-			if(path==null) path=new Stack<ProcessPath>();
+			if (path == null)
+				path = new Stack<ProcessPath>();
 			path.add(parentProcess);
 		}
-		parentProcess = new ProcessPath(processInstanceId, getDisplay(processInstanceId));
+		parentProcess = new ProcessPath(processInstanceId,
+				getDisplay(processInstanceId));
 		adjustProcess();
 
 	}
 
-	
 	private String getDisplay(String id) {
-		String definitionId = getFirstLevel() ? id 
-				: runtimeService.createProcessInstanceQuery().processInstanceId(id)
+		String definitionId = getFirstLevel() ? id : runtimeService
+				.createProcessInstanceQuery().processInstanceId(id)
 				.singleResult().getProcessDefinitionId();
-		String name=getProcessDefinitionName(definitionId);
+		String name = getProcessDefinitionName(definitionId);
 		return String.format("%s - %s", name, id);
 	}
 
@@ -270,13 +271,13 @@ private	ProcessInstanceDAO copyInstanceDAO(HistoricProcessInstance h) {
 
 	void onActionFromGotoPath(int index) {
 
-		if (index != -1 && path !=null) {
+		if (index != -1 && path != null) {
 
 			parentProcess = path.pop();
 			for (int i = path.size() - 2; i >= index; i--)
 				path.pop();
 		} else {
-			path=null;
+			path = null;
 			parentProcess = null;
 
 		}
@@ -285,7 +286,7 @@ private	ProcessInstanceDAO copyInstanceDAO(HistoricProcessInstance h) {
 	}
 
 	void onActionFromUp() {
-		if (path==null || path.size() == 0) {
+		if (path == null || path.size() == 0) {
 			if (parentProcess == null)
 				processDefinitionId = null;
 			else
@@ -296,16 +297,18 @@ private	ProcessInstanceDAO copyInstanceDAO(HistoricProcessInstance h) {
 		adjustProcess();
 
 	}
-	
+
 	void adjustProcess() {
 		if (parentProcess == null)
-			 hasEnded = false;
+			hasEnded = false;
 		else {
-			ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(parentProcess.getId()).singleResult();
+			ProcessInstance processInstance = runtimeService
+					.createProcessInstanceQuery()
+					.processInstanceId(parentProcess.getId()).singleResult();
 
-			hasEnded = (processInstance  == null) ||  processInstance.isEnded();
+			hasEnded = (processInstance == null) || processInstance.isEnded();
 		}
-			
+
 	}
 
 	@Property
@@ -314,8 +317,13 @@ private	ProcessInstanceDAO copyInstanceDAO(HistoricProcessInstance h) {
 	@Property
 	@Persist
 	private Date endDateSearch;
-	
-	public JSONObject getDateOptions(){
-		return new JSONObject().put("dateFormat", "mm/dd/yy");
+
+	public JSONObject getDateOptions() {
+		return new JSONObject().put("dateFormat", "dd/mm/yy");
+	}
+
+	public void onSubmit() {
+		System.out.println(startDateSearch);
+
 	}
 }
