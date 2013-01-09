@@ -1,4 +1,4 @@
-package org.activiti.monitor.dao;
+package org.activiti.monitor.data;
 
 import java.io.Serializable;
 

@@ -2,24 +2,14 @@ package org.activiti.monitor.services;
 
 import java.io.IOException;
 
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.IdentityService;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
 import org.apache.tapestry5.SymbolConstants;
-import org.apache.tapestry5.annotations.Service;
 import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.Contribute;
-import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.ioc.annotations.Local;
 import org.apache.tapestry5.ioc.services.ApplicationDefaults;
 import org.apache.tapestry5.ioc.services.SymbolProvider;
-import org.apache.tapestry5.services.ApplicationGlobals;
-import org.apache.tapestry5.services.Context;
 import org.apache.tapestry5.services.Request;
 import org.apache.tapestry5.services.RequestFilter;
 import org.apache.tapestry5.services.RequestHandler;
@@ -32,9 +22,6 @@ import org.slf4j.Logger;
  * service definitions.
  */
 public class AppModule {
-
-	@Inject
-	private Context context;
 
 	@Contribute(SymbolProvider.class)
 	@ApplicationDefaults
@@ -152,55 +139,5 @@ public class AppModule {
 	 * ExtendedPropertiesRealm realm = new ExtendedPropertiesRealm(
 	 * "classpath:shiro-users.properties"); configuration.add(realm); }
 	 */
-	private ProcessEngine processEngine = null;
-	private IdentityService identityService = null;
-	private RepositoryService repositoryService = null;
-	private RuntimeService runtimeService = null;
-	private HistoryService historyService;;
-
-	@Inject
-	@Service("ApplicationGlobals")
-	private ApplicationGlobals applicationGlobals;
-
-	public ProcessEngine buildActivitiProcessEngine() {
-		if (processEngine == null)
-			processEngine = ProcessEngines.getDefaultProcessEngine();
-		return processEngine;
-
-	}
-
-	public IdentityService buildIdentityService() {
-		if (identityService == null)
-			identityService = buildActivitiProcessEngine().getIdentityService();
-		return identityService;
-	}
-
-	public RepositoryService buildRepositoryService() {
-		if (repositoryService == null)
-			repositoryService = buildActivitiProcessEngine()
-					.getRepositoryService();
-		applicationGlobals.getServletContext().setAttribute(
-				"repositoryService", repositoryService);
-		applicationGlobals.getServletContext().setAttribute("runtimeService",
-				buildActivitiProcessEngine().getRuntimeService());
-
-		return repositoryService;
-	}
-
-	public RuntimeService buildRuntimeService() {
-		if (runtimeService == null)
-			runtimeService = buildActivitiProcessEngine().getRuntimeService();
-		applicationGlobals.getServletContext().setAttribute("runtimeService",
-				runtimeService);
-
-		return runtimeService;
-
-	}
-
-	public HistoryService buildHistoryService() {
-		if (historyService == null)
-			historyService = buildActivitiProcessEngine().getHistoryService();
-		return historyService;
-	}
 
 }

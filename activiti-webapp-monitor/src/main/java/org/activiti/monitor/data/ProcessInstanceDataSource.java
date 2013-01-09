@@ -1,4 +1,4 @@
-package org.activiti.monitor.dao;
+package org.activiti.monitor.data;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +23,7 @@ public class ProcessInstanceDataSource implements GridDataSource {
 	private final ProcessPath parentProcess;
 	Map<String, String> processDefinitionNames;
 
-	private List<ProcessInstanceDAO> pdfDaoList;
+	private List<Instance> pdfDaoList;
 	private int startIndex;
 	private final SearchParameters searchParameters;
 
@@ -51,7 +51,7 @@ public class ProcessInstanceDataSource implements GridDataSource {
 			List<SortConstraint> sortConstraints) {
 		this.startIndex = startIndex;
 
-		pdfDaoList = new ArrayList<ProcessInstanceDAO>();
+		pdfDaoList = new ArrayList<Instance>();
 
 		if (parentProcess == null) {
 			listRootProcesses(startIndex, endIndex, sortConstraints);
@@ -62,9 +62,9 @@ public class ProcessInstanceDataSource implements GridDataSource {
 		System.out.println("prepared " + pdfDaoList.size());
 	}
 
-	private List<ProcessInstanceDAO> listProcessesFromParent(
+	private List<Instance> listProcessesFromParent(
 			List<SortConstraint> sortConstraints) {
-		List<ProcessInstanceDAO> subprocesses = recursiveSubprocesses(parentProcess
+		List<Instance> subprocesses = recursiveSubprocesses(parentProcess
 				.getId());
 		if (sortConstraints != null && !sortConstraints.isEmpty()) {
 			SortConstraint sortConstraint = sortConstraints.get(0);
@@ -72,10 +72,10 @@ public class ProcessInstanceDataSource implements GridDataSource {
 					.getPropertyModel().getPropertyName());
 
 			Collections.sort(subprocesses,
-					new Comparator<ProcessInstanceDAO>() {
+					new Comparator<Instance>() {
 						@Override
-						public int compare(ProcessInstanceDAO o1,
-								ProcessInstanceDAO o2) {
+						public int compare(Instance o1,
+								Instance o2) {
 							switch (sortColumn) {
 							case BK:
 								return o1.businessKey.compareTo(o2.businessKey);
@@ -159,9 +159,9 @@ public class ProcessInstanceDataSource implements GridDataSource {
 		return query;
 	}
 
-	private List<ProcessInstanceDAO> recursiveSubprocesses(
+	private List<Instance> recursiveSubprocesses(
 			String parentProcessId) {
-		List<ProcessInstanceDAO> subprocesses = new ArrayList<ProcessInstanceDAO>();
+		List<Instance> subprocesses = new ArrayList<Instance>();
 		for (HistoricProcessInstance historicProcessInstance : historyService
 				.createHistoricProcessInstanceQuery()
 				.superProcessInstanceId(parentProcessId).list()) {
@@ -176,17 +176,17 @@ public class ProcessInstanceDataSource implements GridDataSource {
 	@Override
 	public Object getRowValue(int index) {
 		System.out.println(index);
-		ProcessInstanceDAO res = pdfDaoList.get(index - startIndex);
+		Instance res = pdfDaoList.get(index - startIndex);
 		return res;
 	}
 
 	@Override
 	public Class getRowType() {
-		return ProcessInstanceDAO.class;
+		return Instance.class;
 	}
 
-	ProcessInstanceDAO copyInstanceDAO(HistoricProcessInstance h) {
-		ProcessInstanceDAO p = new ProcessInstanceDAO();
+	Instance copyInstanceDAO(HistoricProcessInstance h) {
+		Instance p = new Instance();
 		p.setId(h.getId());
 		p.setName(getProcessDefinitionName(h.getProcessDefinitionId()) + " - "
 				+ h.getId());

@@ -1,8 +1,8 @@
-package org.activiti.monitor.dao;
+package org.activiti.monitor.data;
 
 import org.apache.tapestry5.beaneditor.NonVisual;
 
-public class ProcessDefinitionDAO {
+public class Definition {
 
 	String processDefinitionName;
 	int version;

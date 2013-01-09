@@ -22,11 +22,15 @@
 			<artifactId>tapestry-core</artifactId>
 			<version>${tapestry-release-version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.apache.tapestry</groupId>
+			<artifactId>tapestry-spring</artifactId>
+			<version>${tapestry-release-version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-engine</artifactId>
-			<version>5.10</version>
+			<version>${activiti.version}</version>
 		</dependency>
 
 		<!-- This adds automatic compression of JavaScript and CSS when in production 
@@ -91,6 +95,11 @@
 			<version>2.0.3</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-spring</artifactId>
+			<version>${activiti.version}</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>activiti-webapp-monitor</finalName>
@@ -165,5 +174,20 @@
 		<servlet-api-release-version>2.5</servlet-api-release-version>
 		<testng-release-version>5.14.10</testng-release-version>
 		<easymock-release-version>3.0</easymock-release-version>
+		<activiti.version>5.10</activiti.version>
 	</properties>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>3.1.2.RELEASE</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>3.1.2.RELEASE</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>

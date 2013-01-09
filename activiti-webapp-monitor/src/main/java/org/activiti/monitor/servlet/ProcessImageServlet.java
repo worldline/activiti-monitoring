@@ -6,7 +6,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServlet;
+import javax.inject.Inject;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,36 +15,31 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.monitor.graphics.ProcessDefinitionImageStreamResourceBuilder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.HttpRequestHandler;
 
-public class ProcessImageServlet extends HttpServlet {
+@Component("processImageServlet")
+public class ProcessImageServlet implements HttpRequestHandler {
 
-	private static final long serialVersionUID = 1L;
+	@Inject
+	RuntimeService runtimeService;
+	@Inject
+	RepositoryService repositoryService;
 
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-
+	@Override
+	public void handleRequest(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("image/png");
 		String processInstanceId = request.getParameter("instanceId");
-
-		RuntimeService runtimeService = (RuntimeService) getServletContext()
-				.getAttribute("runtimeService");
-		RepositoryService repositoryService = (RepositoryService) getServletContext()
-				.getAttribute("repositoryService");
-		if (repositoryService == null || runtimeService == null)
-			return;
-
 		ProcessInstance pi = runtimeService.createProcessInstanceQuery()
 				.processInstanceId(processInstanceId).singleResult();
 		ProcessDefinitionImageStreamResourceBuilder imageBuilder = new ProcessDefinitionImageStreamResourceBuilder();
-
 		InputStream is = imageBuilder.buildStreamResource(pi,
 				repositoryService, runtimeService);
-
 		BufferedImage bi = ImageIO.read(is);
 		OutputStream out = response.getOutputStream();
 		ImageIO.write(bi, "png", out);
 		out.close();
 
 	}
-
 }

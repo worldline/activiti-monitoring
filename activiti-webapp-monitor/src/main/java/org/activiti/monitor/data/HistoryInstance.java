@@ -1,10 +1,10 @@
-package org.activiti.monitor.dao;
+package org.activiti.monitor.data;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ProcessInstanceHistoryDAO {
+public class HistoryInstance {
 
 	private String name;
 	Date startDate;

@@ -1,4 +1,4 @@
-package org.activiti.monitor.dao;
+package org.activiti.monitor.data;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -6,7 +6,7 @@ import java.util.Date;
 
 import org.apache.tapestry5.beaneditor.NonVisual;
 
-public class ProcessInstanceDAO {
+public class Instance {
 
 	String name;
 
