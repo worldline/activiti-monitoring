@@ -67,12 +67,12 @@
  						    </td>
  							<td>
  								<t:label t:for="startDateSearch">Start Date : </t:label>
-     							<input t:type="datefield" t:id="startDateSearch" class="k-datepick"  
+     							<input t:type="datefield" t:id="startDateSearch" class="k-datepick"  t:format="dd/MM/yy"
     								t:params="dateOptions" t:mixins="jquery/CustomDatepicker"  t:value="startDateSearch"/>
  							</td>
  							<td>
  								<t:label t:for="endDateSearch">End Date : </t:label>
-     							<input t:type="datefield" t:id="endDateSearch" class="k-datepick"  
+     							<input t:type="datefield" t:id="endDateSearch" class="k-datepick"  t:format="dd/MM/yy"
     								t:params="dateOptions" t:mixins="jquery/CustomDatepicker"  t:value="endDateSearch"/>
  							</td>
  							<td>
