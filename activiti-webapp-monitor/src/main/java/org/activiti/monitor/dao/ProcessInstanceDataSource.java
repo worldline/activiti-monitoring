@@ -10,16 +10,11 @@ import java.util.Map;
 
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
-import org.apache.tapestry5.annotations.Persist;
-import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.grid.ColumnSort;
 import org.apache.tapestry5.grid.GridDataSource;
 import org.apache.tapestry5.grid.SortConstraint;
-import org.apache.tapestry5.ioc.annotations.Inject;
-import org.bouncycastle.asn1.pkcs.Pfx;
 
 public class ProcessInstanceDataSource implements GridDataSource {
 	private final RepositoryService repositoryService;
@@ -30,13 +25,11 @@ public class ProcessInstanceDataSource implements GridDataSource {
 
 	private List<ProcessInstanceDAO> pdfDaoList;
 	private int startIndex;
-	private String name;
 	private final SearchParameters searchParameters;
 
 	public ProcessInstanceDataSource(RepositoryService repositoryService,
 			HistoryService historyService, ProcessPath parentProcess,
-			String processDefinitionId,
-			SearchParameters searchParameters) {
+			String processDefinitionId, SearchParameters searchParameters) {
 		this.repositoryService = repositoryService;
 		this.historyService = historyService;
 		this.parentProcess = parentProcess;
@@ -46,7 +39,7 @@ public class ProcessInstanceDataSource implements GridDataSource {
 
 	@Override
 	public int getAvailableRows() {
-		System.out.println(parentProcess); 
+		System.out.println(parentProcess);
 		int count = parentProcess == null ? (int) buildQuery().count()
 				: listProcessesFromParent(null).size();
 		System.out.println("count : " + count);
@@ -69,7 +62,8 @@ public class ProcessInstanceDataSource implements GridDataSource {
 		System.out.println("prepared " + pdfDaoList.size());
 	}
 
-	private List<ProcessInstanceDAO> listProcessesFromParent(List<SortConstraint> sortConstraints) {
+	private List<ProcessInstanceDAO> listProcessesFromParent(
+			List<SortConstraint> sortConstraints) {
 		List<ProcessInstanceDAO> subprocesses = recursiveSubprocesses(parentProcess
 				.getId());
 		if (sortConstraints != null && !sortConstraints.isEmpty()) {
@@ -140,7 +134,7 @@ public class ProcessInstanceDataSource implements GridDataSource {
 				break;
 			}
 		}
-		
+
 		List<HistoricProcessInstance> historyProcessInstanceList = query
 				.listPage(startIndex, endIndex - startIndex + 1);
 
@@ -154,14 +148,14 @@ public class ProcessInstanceDataSource implements GridDataSource {
 				.createHistoricProcessInstanceQuery();
 		query = query.processDefinitionId(processDefinitionId);
 		String businessKey = searchParameters.getBusinessKey();
-		if(isDefined(businessKey))
-			query=query.processInstanceBusinessKey(businessKey);
+		if (isDefined(businessKey))
+			query = query.processInstanceBusinessKey(businessKey);
 		Date start = searchParameters.getStart();
-		if(start!=null)
-			query=query.startDateOn(start);
+		if (start != null)
+			query = query.startDateOn(start);
 		Date end = searchParameters.getEnd();
-		if(end!=null)
-			query=query.finishDateOn(end);
+		if (end != null)
+			query = query.finishDateOn(end);
 		return query;
 	}
 
@@ -235,8 +229,8 @@ public class ProcessInstanceDataSource implements GridDataSource {
 			throw new IllegalArgumentException(col);
 		}
 	}
-	
-	private static boolean isDefined(String value){
+
+	private static boolean isDefined(String value) {
 		return value != null && value.trim().length() > 0;
 	}
 }

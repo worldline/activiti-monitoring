@@ -10,7 +10,6 @@ import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.runtime.ProcessInstance;
 
-
 /**
  * Builder that is capable of creating a {@link StreamResource} for a given
  * process-definition, containing the diagram image, if available.
@@ -34,8 +33,8 @@ public class ProcessDefinitionImageStreamResourceBuilder {
 		if (processDefinition != null) {
 			try {
 				InputStream definitionImageStream = ProcessDiagramGenerator
-						.generateDiagram(processDefinition, DEFAULT_DIAGRAM_IMAGE_EXTENSION,
-								runtimeService
+						.generateDiagram(processDefinition,
+								DEFAULT_DIAGRAM_IMAGE_EXTENSION, runtimeService
 										.getActiveActivityIds(processInstance
 												.getId()));
 				return definitionImageStream;

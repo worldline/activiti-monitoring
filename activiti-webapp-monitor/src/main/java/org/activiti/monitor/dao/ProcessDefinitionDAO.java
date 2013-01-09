@@ -3,10 +3,10 @@ package org.activiti.monitor.dao;
 import org.apache.tapestry5.beaneditor.NonVisual;
 
 public class ProcessDefinitionDAO {
-	
+
 	String processDefinitionName;
 	int version;
-	
+
 	@NonVisual
 	String id;
 
@@ -33,8 +33,5 @@ public class ProcessDefinitionDAO {
 	public void setVersion(int version) {
 		this.version = version;
 	}
-	
-	
-	
 
 }

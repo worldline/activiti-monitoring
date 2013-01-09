@@ -18,7 +18,6 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
@@ -76,15 +75,6 @@ public class FillData {
 			completedTasks.add(task.getId());
 		}
 		System.out.println("Completing tasks " + taskname + " Finished");
-
-	}
-
-	private void showResults() {
-		List<Execution> execs = runtimeService.createExecutionQuery().list();
-
-		for (Execution exec : execs) {
-			System.out.println(exec.getId());
-		}
 
 	}
 

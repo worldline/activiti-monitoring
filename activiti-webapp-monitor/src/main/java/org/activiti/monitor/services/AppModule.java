@@ -32,16 +32,16 @@ import org.slf4j.Logger;
  * service definitions.
  */
 public class AppModule {
-	
-	@Inject 
-	private Context context; 
-	
+
+	@Inject
+	private Context context;
+
 	@Contribute(SymbolProvider.class)
-    @ApplicationDefaults
-    public static void applicationDefaults(MappedConfiguration<String, String> configuration)
-    {
-        configuration.add(SymbolConstants.APPLICATION_FOLDER, "app");
-    }
+	@ApplicationDefaults
+	public static void applicationDefaults(
+			MappedConfiguration<String, String> configuration) {
+		configuration.add(SymbolConstants.APPLICATION_FOLDER, "app");
+	}
 
 	public static void bind(ServiceBinder binder) {
 		// binder.bind(MyServiceInterface.class, MyServiceImpl.class);
@@ -146,62 +146,61 @@ public class AppModule {
 	}
 
 	/*
-	@Contribute(WebSecurityManager.class)
-	public static void addRealms(Configuration<Realm> configuration) {
-		
-		ExtendedPropertiesRealm realm = new ExtendedPropertiesRealm(
-				"classpath:shiro-users.properties");
-		configuration.add(realm);
-	}
-	*/
+	 * @Contribute(WebSecurityManager.class) public static void
+	 * addRealms(Configuration<Realm> configuration) {
+	 * 
+	 * ExtendedPropertiesRealm realm = new ExtendedPropertiesRealm(
+	 * "classpath:shiro-users.properties"); configuration.add(realm); }
+	 */
 	private ProcessEngine processEngine = null;
 	private IdentityService identityService = null;
-	private RepositoryService repositoryService = null; 
+	private RepositoryService repositoryService = null;
 	private RuntimeService runtimeService = null;
 	private HistoryService historyService;;
-	
-	@Inject 
-	@Service("ApplicationGlobals") 
-	private ApplicationGlobals applicationGlobals; 
-	
-	public  ProcessEngine buildActivitiProcessEngine() {
-		if (processEngine == null)		
-		  processEngine = ProcessEngines.getDefaultProcessEngine();
+
+	@Inject
+	@Service("ApplicationGlobals")
+	private ApplicationGlobals applicationGlobals;
+
+	public ProcessEngine buildActivitiProcessEngine() {
+		if (processEngine == null)
+			processEngine = ProcessEngines.getDefaultProcessEngine();
 		return processEngine;
-		
+
 	}
-	
+
 	public IdentityService buildIdentityService() {
 		if (identityService == null)
-			identityService = buildActivitiProcessEngine().getIdentityService(); 
+			identityService = buildActivitiProcessEngine().getIdentityService();
 		return identityService;
 	}
-	
+
 	public RepositoryService buildRepositoryService() {
 		if (repositoryService == null)
-			repositoryService = buildActivitiProcessEngine().getRepositoryService();
-		applicationGlobals.getServletContext().setAttribute("repositoryService", repositoryService);
-		applicationGlobals.getServletContext().setAttribute("runtimeService", buildActivitiProcessEngine().getRuntimeService());
+			repositoryService = buildActivitiProcessEngine()
+					.getRepositoryService();
+		applicationGlobals.getServletContext().setAttribute(
+				"repositoryService", repositoryService);
+		applicationGlobals.getServletContext().setAttribute("runtimeService",
+				buildActivitiProcessEngine().getRuntimeService());
 
 		return repositoryService;
 	}
-	
+
 	public RuntimeService buildRuntimeService() {
 		if (runtimeService == null)
 			runtimeService = buildActivitiProcessEngine().getRuntimeService();
-		applicationGlobals.getServletContext().setAttribute("runtimeService", runtimeService);
-		
+		applicationGlobals.getServletContext().setAttribute("runtimeService",
+				runtimeService);
+
 		return runtimeService;
-		
+
 	}
-	
-	
+
 	public HistoryService buildHistoryService() {
 		if (historyService == null)
 			historyService = buildActivitiProcessEngine().getHistoryService();
 		return historyService;
 	}
-	
-	
-	
+
 }

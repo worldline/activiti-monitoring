@@ -22,10 +22,6 @@
 			<div id="navbar">
 				<ul class="k-navbar">
 					<li class="home"><a t:type="pageLink" t:page="Index">Home</a></li>
-					<!--
-					<li><a t:type="pageLink" t:page="Timer">Example page</a></li>
-					<li><a t:type="pageLink" t:page="Tree">Tree page</a></li>
-					-->
 				</ul>
 			</div>
 		</div>

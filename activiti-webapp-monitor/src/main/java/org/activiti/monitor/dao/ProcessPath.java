@@ -3,6 +3,7 @@ package org.activiti.monitor.dao;
 import java.io.Serializable;
 
 public class ProcessPath implements Serializable {
+	private static final long serialVersionUID = 8094584685989723858L;
 	private final String id;
 	private final String display;
 
@@ -10,7 +11,7 @@ public class ProcessPath implements Serializable {
 		this.id = id;
 		this.display = display;
 	}
-	
+
 	public String getId() {
 		return id;
 	}
@@ -18,7 +19,7 @@ public class ProcessPath implements Serializable {
 	public String getDisplay() {
 		return display;
 	}
-	
+
 	@Override
 	public String toString() {
 		return display;

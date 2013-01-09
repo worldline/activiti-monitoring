@@ -1,6 +1,5 @@
 package org.activiti.monitor.pages;
 
-public class Contact
-{
+public class Contact {
 
 }

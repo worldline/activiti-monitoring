@@ -15,27 +15,30 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.monitor.graphics.ProcessDefinitionImageStreamResourceBuilder;
 
-
 public class ProcessImageServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
 
 		response.setContentType("image/png");
 		String processInstanceId = request.getParameter("instanceId");
-		
-		RuntimeService runtimeService = (RuntimeService) getServletContext().getAttribute("runtimeService");
-		RepositoryService repositoryService = (RepositoryService) getServletContext().getAttribute("repositoryService");
+
+		RuntimeService runtimeService = (RuntimeService) getServletContext()
+				.getAttribute("runtimeService");
+		RepositoryService repositoryService = (RepositoryService) getServletContext()
+				.getAttribute("repositoryService");
 		if (repositoryService == null || runtimeService == null)
 			return;
 
-		ProcessInstance pi =runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+		ProcessInstance pi = runtimeService.createProcessInstanceQuery()
+				.processInstanceId(processInstanceId).singleResult();
 		ProcessDefinitionImageStreamResourceBuilder imageBuilder = new ProcessDefinitionImageStreamResourceBuilder();
 
-		InputStream is = imageBuilder.buildStreamResource(pi, repositoryService, runtimeService);
+		InputStream is = imageBuilder.buildStreamResource(pi,
+				repositoryService, runtimeService);
 
-		
 		BufferedImage bi = ImageIO.read(is);
 		OutputStream out = response.getOutputStream();
 		ImageIO.write(bi, "png", out);
