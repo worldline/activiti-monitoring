@@ -14,6 +14,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.monitor.dao.DefinitionDAO;
+import org.activiti.monitor.dao.HistoryDAO;
 import org.activiti.monitor.dao.InstanceDAO;
 import org.activiti.monitor.dao.VariableDAO;
 import org.activiti.monitor.data.Definition;
@@ -42,6 +43,8 @@ public class Index {
 	VariableDAO variableDAO;
 	@Inject
 	DefinitionDAO definitionDAO;
+	@Inject
+	HistoryDAO historyDAO;
 
 	@Inject
 	RepositoryService repositoryService;
@@ -109,7 +112,7 @@ public class Index {
 	}
 
 	private String getDisplay(String id) {
-		String definitionId = getFirstLevel() ? id : instanceDAO
+		String definitionId = getFirstLevel() ? id : historyDAO
 				.getProcessDefinitionId(id);
 		String name = definitionDAO.getProcessDefinitionName(definitionId);
 		return String.format("%s - %s", name, id);

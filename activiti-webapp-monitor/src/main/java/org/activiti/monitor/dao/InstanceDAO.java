@@ -58,10 +58,4 @@ public class InstanceDAO {
 		return subprocesses;
 	}
 
-	public String getProcessDefinitionId(String processId) {
-		return runtimeService.createProcessInstanceQuery()
-				.processInstanceId(processId).singleResult()
-				.getProcessDefinitionId();
-	}
-
 }

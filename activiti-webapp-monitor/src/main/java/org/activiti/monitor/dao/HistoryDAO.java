@@ -29,4 +29,10 @@ public class HistoryDAO {
 		}
 		return histories;
 	}
+
+	public String getProcessDefinitionId(String processId) {
+		return historyService.createHistoricProcessInstanceQuery()
+				.processInstanceId(processId).singleResult()
+				.getProcessDefinitionId();
+	}
 }
