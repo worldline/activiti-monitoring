@@ -65,6 +65,9 @@
 	 						<td><t:label t:for="businessKeySearch">Business Key : </t:label>
  								 <t:textfield t:id="businessKeySearch" t:mixins="kawwa2/tipsy"/>
  						    </td>
+	 						<td><t:label t:for="activitySearch">Activity : </t:label>
+ 								 <t:textfield t:id="activitySearch" t:mixins="kawwa2/tipsy"/>
+ 						    </td>
  							<td>
  								<t:label t:for="startDateSearch">Start Date : </t:label>
      							<input t:type="datefield" t:id="startDateSearch" class="k-datepick"  t:format="dd/MM/yy"

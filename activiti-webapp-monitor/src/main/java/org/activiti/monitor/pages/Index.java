@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 import org.activiti.engine.HistoryService;
+import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -45,6 +46,8 @@ public class Index {
 	DefinitionDAO definitionDAO;
 	@Inject
 	HistoryDAO historyDAO;
+	@Inject
+	ProcessEngine processEngine;
 
 	@Inject
 	RepositoryService repositoryService;
@@ -73,6 +76,10 @@ public class Index {
 	@Property
 	@Persist
 	private String businessKeySearch;
+
+	@Property
+	@Persist
+	private String activitySearch;
 
 	@Persist
 	private boolean hasEnded;
@@ -171,9 +178,10 @@ public class Index {
 
 	public GridDataSource getProcessInstances() {
 		SearchParameters searchParameters = new SearchParameters(
-				businessKeySearch, startDateSearch, endDateSearch);
-		return new ProcessInstanceDataSource(repositoryService, historyService,
-				parentProcess, processDefinitionId, searchParameters);
+				businessKeySearch, startDateSearch, endDateSearch,
+				activitySearch);
+		return new ProcessInstanceDataSource(processEngine, parentProcess,
+				processDefinitionId, searchParameters);
 	}
 
 	public List<Variable> getVariables() {
@@ -239,11 +247,6 @@ public class Index {
 			parentProcess = path.pop();
 		}
 		adjustProcess();
-
-	}
-
-	public void onSubmit() {
-		System.out.println(startDateSearch);
 
 	}
 }

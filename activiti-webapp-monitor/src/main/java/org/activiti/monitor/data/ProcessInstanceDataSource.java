@@ -9,16 +9,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.HistoryService;
+import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
+import org.activiti.engine.query.Query;
+import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.ExecutionQuery;
 import org.apache.tapestry5.grid.ColumnSort;
 import org.apache.tapestry5.grid.GridDataSource;
 import org.apache.tapestry5.grid.SortConstraint;
 
 public class ProcessInstanceDataSource implements GridDataSource {
-	private final RepositoryService repositoryService;
-	private final HistoryService historyService;
 	private final String processDefinitionId;
 	private final ProcessPath parentProcess;
 	Map<String, String> processDefinitionNames;
@@ -26,12 +29,18 @@ public class ProcessInstanceDataSource implements GridDataSource {
 	private List<Instance> pdfDaoList;
 	private int startIndex;
 	private final SearchParameters searchParameters;
+	private final ProcessEngine processEngine;
+	private final RepositoryService repositoryService;
+	private final HistoryService historyService;
+	private final RuntimeService runtimeService;
 
-	public ProcessInstanceDataSource(RepositoryService repositoryService,
-			HistoryService historyService, ProcessPath parentProcess,
-			String processDefinitionId, SearchParameters searchParameters) {
-		this.repositoryService = repositoryService;
-		this.historyService = historyService;
+	public ProcessInstanceDataSource(ProcessEngine processEngine,
+			ProcessPath parentProcess, String processDefinitionId,
+			SearchParameters searchParameters) {
+		this.processEngine = processEngine;
+		repositoryService = processEngine.getRepositoryService();
+		historyService = processEngine.getHistoryService();
+		runtimeService = processEngine.getRuntimeService();
 		this.parentProcess = parentProcess;
 		this.processDefinitionId = processDefinitionId;
 		this.searchParameters = searchParameters;
@@ -39,10 +48,8 @@ public class ProcessInstanceDataSource implements GridDataSource {
 
 	@Override
 	public int getAvailableRows() {
-		System.out.println(parentProcess);
 		int count = parentProcess == null ? (int) buildQuery().count()
 				: listProcessesFromParent(null).size();
-		System.out.println("count : " + count);
 		return count;
 	}
 
@@ -71,30 +78,25 @@ public class ProcessInstanceDataSource implements GridDataSource {
 			final Column sortColumn = Column.from(sortConstraint
 					.getPropertyModel().getPropertyName());
 
-			Collections.sort(subprocesses,
-					new Comparator<Instance>() {
-						@Override
-						public int compare(Instance o1,
-								Instance o2) {
-							switch (sortColumn) {
-							case BK:
-								return o1.businessKey.compareTo(o2.businessKey);
-							case ENDDATE:
-								return o1.getEndDate().compareTo(
-										o2.getEndDate());
-							case ENDSTATUS:
-								return o1.getEndStatus().compareTo(
-										o2.getEndStatus());
-							case NAME:
-								return o1.getName().compareTo(o2.getName());
-							case STARTDATE:
-								return o1.getStartDate().compareTo(
-										o2.getStartDate());
-							default:
-								return 0;
-							}
-						}
-					});
+			Collections.sort(subprocesses, new Comparator<Instance>() {
+				@Override
+				public int compare(Instance o1, Instance o2) {
+					switch (sortColumn) {
+					case BK:
+						return o1.businessKey.compareTo(o2.businessKey);
+					case ENDDATE:
+						return o1.getEndDate().compareTo(o2.getEndDate());
+					case ENDSTATUS:
+						return o1.getEndStatus().compareTo(o2.getEndStatus());
+					case NAME:
+						return o1.getName().compareTo(o2.getName());
+					case STARTDATE:
+						return o1.getStartDate().compareTo(o2.getStartDate());
+					default:
+						return 0;
+					}
+				}
+			});
 			if (sortConstraint.getColumnSort() == ColumnSort.DESCENDING)
 				Collections.reverse(subprocesses);
 		}
@@ -104,46 +106,60 @@ public class ProcessInstanceDataSource implements GridDataSource {
 
 	private void listRootProcesses(int startIndex, int endIndex,
 			List<SortConstraint> sortConstraints) {
-		HistoricProcessInstanceQuery query = buildQuery();
-		if (!sortConstraints.isEmpty()) {
-			SortConstraint sortConstraint = sortConstraints.get(0);
-			Column sortColumn = Column.from(sortConstraint.getPropertyModel()
-					.getPropertyName());
-			System.out.println(sortColumn);
-			switch (sortColumn) {
-			case BK:
-				query = query.orderByProcessInstanceBusinessKey();
-				break;
-			case ENDDATE:
-			case ENDSTATUS: // NOT really implemented here
-				query = query.orderByProcessInstanceEndTime();
-				break;
-			case NAME:
-				query = query.orderByProcessInstanceId();
-				break;
-			case STARTDATE:
-				query = query.orderByProcessInstanceStartTime();
-				break;
+		if (isDefined(searchParameters.getActivityId())) {
+			ExecutionQuery query = buildExecutionQuery();
+			List<Execution> list = query.listPage(startIndex, endIndex
+					- startIndex + 1);
+			for (Execution execution : list) {
+				pdfDaoList.add(copyInstanceDAO(execution));
 			}
-			switch (sortConstraint.getColumnSort()) {
-			case ASCENDING:
-				query = query.asc();
-				break;
-			case DESCENDING:
-				query = query.desc();
-				break;
+		} else {
+			HistoricProcessInstanceQuery query = buildHistoryQuery();
+			if (!sortConstraints.isEmpty()) {
+				SortConstraint sortConstraint = sortConstraints.get(0);
+				Column sortColumn = Column.from(sortConstraint
+						.getPropertyModel().getPropertyName());
+				System.out.println(sortColumn);
+				switch (sortColumn) {
+				case BK:
+					query = query.orderByProcessInstanceBusinessKey();
+					break;
+				case ENDDATE:
+				case ENDSTATUS: // NOT really implemented here
+					query = query.orderByProcessInstanceEndTime();
+					break;
+				case NAME:
+					query = query.orderByProcessInstanceId();
+					break;
+				case STARTDATE:
+					query = query.orderByProcessInstanceStartTime();
+					break;
+				}
+				switch (sortConstraint.getColumnSort()) {
+				case ASCENDING:
+					query = query.asc();
+					break;
+				case DESCENDING:
+					query = query.desc();
+					break;
+				}
 			}
-		}
 
-		List<HistoricProcessInstance> historyProcessInstanceList = query
-				.listPage(startIndex, endIndex - startIndex + 1);
+			List<HistoricProcessInstance> historyProcessInstanceList = query
+					.listPage(startIndex, endIndex - startIndex + 1);
 
-		for (HistoricProcessInstance processHistoryInstance : historyProcessInstanceList) {
-			pdfDaoList.add(copyInstanceDAO(processHistoryInstance));
+			for (HistoricProcessInstance processHistoryInstance : historyProcessInstanceList) {
+				pdfDaoList.add(copyInstanceDAO(processHistoryInstance));
+			}
 		}
 	}
 
-	private HistoricProcessInstanceQuery buildQuery() {
+	private Query<?, ?> buildQuery() {
+		return isDefined(searchParameters.getActivityId()) ? buildExecutionQuery()
+				: buildHistoryQuery();
+	}
+
+	private HistoricProcessInstanceQuery buildHistoryQuery() {
 		HistoricProcessInstanceQuery query = historyService
 				.createHistoricProcessInstanceQuery();
 		query = query.processDefinitionId(processDefinitionId);
@@ -159,8 +175,19 @@ public class ProcessInstanceDataSource implements GridDataSource {
 		return query;
 	}
 
-	private List<Instance> recursiveSubprocesses(
-			String parentProcessId) {
+	private ExecutionQuery buildExecutionQuery() {
+		ExecutionQuery query = runtimeService.createExecutionQuery();
+		query = query.processDefinitionId(processDefinitionId);
+		String businessKey = searchParameters.getBusinessKey();
+		if (isDefined(businessKey))
+			query = query.processInstanceBusinessKey(businessKey);
+		String activityId = searchParameters.getActivityId();
+		if (isDefined(activityId))
+			query = query.activityId(activityId);
+		return query;
+	}
+
+	private List<Instance> recursiveSubprocesses(String parentProcessId) {
 		List<Instance> subprocesses = new ArrayList<Instance>();
 		for (HistoricProcessInstance historicProcessInstance : historyService
 				.createHistoricProcessInstanceQuery()
@@ -185,7 +212,7 @@ public class ProcessInstanceDataSource implements GridDataSource {
 		return Instance.class;
 	}
 
-	Instance copyInstanceDAO(HistoricProcessInstance h) {
+	private Instance copyInstanceDAO(HistoricProcessInstance h) {
 		Instance p = new Instance();
 		p.setId(h.getId());
 		p.setName(getProcessDefinitionName(h.getProcessDefinitionId()) + " - "
@@ -194,9 +221,11 @@ public class ProcessInstanceDataSource implements GridDataSource {
 		p.setEndDate(h.getEndTime());
 		p.setBusinessKey(h.getBusinessKey());
 		p.setEndStatus(h.getEndActivityId());
-
 		return p;
+	}
 
+	private Instance copyInstanceDAO(Execution h) {
+		return copyInstanceDAO(getHistory(h.getProcessInstanceId()));
 	}
 
 	private String getProcessDefinitionName(String processDefinitionId) {
@@ -232,5 +261,10 @@ public class ProcessInstanceDataSource implements GridDataSource {
 
 	private static boolean isDefined(String value) {
 		return value != null && value.trim().length() > 0;
+	}
+
+	private HistoricProcessInstance getHistory(String processInstanceId) {
+		return historyService.createHistoricProcessInstanceQuery()
+				.processInstanceId(processInstanceId).singleResult();
 	}
 }
