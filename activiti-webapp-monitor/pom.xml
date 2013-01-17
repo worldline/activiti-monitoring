@@ -188,6 +188,11 @@
 				<artifactId>spring-web</artifactId>
 				<version>3.1.2.RELEASE</version>
 			</dependency>
+			<dependency>
+				<groupId>org.got5</groupId>
+				<artifactId>tapestry5-jquery</artifactId>
+				<version>3.3.5</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 </project>

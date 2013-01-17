@@ -24,6 +24,6 @@ public class DevelopmentModule {
 		// also
 		// change, to force the browser to download new versions.
 		configuration.add(SymbolConstants.APPLICATION_VERSION,
-				"1.0-SNAPSHOT-DEV");
+				"1.1-SNAPSHOT-DEV");
 	}
 }
