@@ -45,7 +45,7 @@
         	<tr>
 	    		<td>
 		        			<table t:type="jquery/datatable"  t:source="processDefinitions" rowsPerPage="5"
-	                 				t:row="processDefinition"  >
+	                 				t:row="processDefinition"  model="processDefinitionModel">
 	                 	        <p:processDefinitionNameCell>
 		                			<t:actionlink t:id="listRootProcesses" context="processDefinition.id">${processDefinition.processDefinitionName}</t:actionlink>
 		            			</p:processDefinitionNameCell>

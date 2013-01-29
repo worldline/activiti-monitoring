@@ -148,6 +148,13 @@ public class Index {
 		}
 		return histories;
 	}
+	
+	public BeanModel<Definition> getProcessDefinitionModel() {
+		BeanModel<Definition> model = beanModelSource.createDisplayModel(
+				Definition.class, resources.getMessages());
+		return model;
+		}
+	
 
 	public BeanModel<Instance> getInstanceModel() {
 		BeanModel<Instance> model = beanModelSource.createDisplayModel(
