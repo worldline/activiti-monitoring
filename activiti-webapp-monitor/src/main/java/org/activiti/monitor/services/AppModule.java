@@ -27,7 +27,7 @@ public class AppModule {
 	@ApplicationDefaults
 	public static void applicationDefaults(
 			MappedConfiguration<String, String> configuration) {
-		configuration.add(SymbolConstants.APPLICATION_FOLDER, "app");
+//		configuration.add(SymbolConstants.APPLICATION_FOLDER, "app");
 	}
 
 	public static void bind(ServiceBinder binder) {

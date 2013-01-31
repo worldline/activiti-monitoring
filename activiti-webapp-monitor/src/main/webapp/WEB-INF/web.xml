@@ -37,7 +37,10 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>app</filter-name>
+		<url-pattern>/*</url-pattern>
+		<!--  temporarily
 		<url-pattern>/app/*</url-pattern>
+		 -->
 	</filter-mapping>
 
 	<listener>
