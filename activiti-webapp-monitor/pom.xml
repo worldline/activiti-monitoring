@@ -87,8 +87,11 @@
 			<version>${tapestry-release-version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- <dependency> <groupId>org.tynamo</groupId> <artifactId>tapestry-security</artifactId> 
-			<version>0.4.6</version> </dependency> -->
+		<dependency> 
+			<groupId>org.tynamo</groupId> 
+			<artifactId>tapestry-security</artifactId> 
+			<version>0.4.6</version> 
+		</dependency>
 		<dependency>
 			<groupId>net.atos.tapestry</groupId>
 			<artifactId>tapestry5-kawwa-components</artifactId>

@@ -2,10 +2,15 @@ package org.activiti.monitor.services;
 
 import java.io.IOException;
 
+import org.activiti.monitor.shiro.ActivitiRealm;
+import org.apache.shiro.realm.Realm;
+import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.tapestry5.SymbolConstants;
+import org.apache.tapestry5.ioc.Configuration;
 import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.ServiceBinder;
+import org.apache.tapestry5.ioc.annotations.Autobuild;
 import org.apache.tapestry5.ioc.annotations.Contribute;
 import org.apache.tapestry5.ioc.annotations.Local;
 import org.apache.tapestry5.ioc.services.ApplicationDefaults;
@@ -15,6 +20,9 @@ import org.apache.tapestry5.services.RequestFilter;
 import org.apache.tapestry5.services.RequestHandler;
 import org.apache.tapestry5.services.Response;
 import org.slf4j.Logger;
+import org.tynamo.security.SecuritySymbols;
+import org.tynamo.security.services.SecurityFilterChainFactory;
+import org.tynamo.security.services.impl.SecurityFilterChain;
 
 /**
  * This module is automatically included as part of the Tapestry IoC Registry,
@@ -23,11 +31,17 @@ import org.slf4j.Logger;
  */
 public class AppModule {
 
+
 	@Contribute(SymbolProvider.class)
 	@ApplicationDefaults
 	public static void applicationDefaults(
 			MappedConfiguration<String, String> configuration) {
-//		configuration.add(SymbolConstants.APPLICATION_FOLDER, "app");
+		// fails to work for now. Should be fixed. TODO: Fix this
+//		 configuration.add(SymbolConstants.APPLICATION_FOLDER, "app");
+			
+	    // Tynamo's tapestry-security (Shiro) module configuration
+	    configuration.add(SecuritySymbols.LOGIN_URL, "/login");
+		
 	}
 
 	public static void bind(ServiceBinder binder) {
@@ -132,12 +146,39 @@ public class AppModule {
 		configuration.add("Timing", filter);
 	}
 
-	/*
-	 * @Contribute(WebSecurityManager.class) public static void
-	 * addRealms(Configuration<Realm> configuration) {
-	 * 
-	 * ExtendedPropertiesRealm realm = new ExtendedPropertiesRealm(
-	 * "classpath:shiro-users.properties"); configuration.add(realm); }
-	 */
+	
+	 @Contribute(WebSecurityManager.class) 
+	 public static void  addRealms(Configuration<Realm> configuration, @Autobuild ActivitiRealm activitiRealm) {
+//         ExrendedPropertiesReal is left over here for probable future tests. Just uncomment the followin line and return it		 
+// 	  ExtendedPropertiesRealm realm = new ExtendedPropertiesRealm("classpath:shiro-users.properties");
+		 
+	  configuration.add(activitiRealm); 
+	  }
+	 
+	// Starting from 0.4.6, you can also use a marker annotation:
+	// @Contribute(HttpServletRequestFilter.class) @Security public static void securePaths(...)
+	public static void contributeSecurityConfiguration(Configuration<SecurityFilterChain> configuration,
+				SecurityFilterChainFactory factory) {
+			// /authc/** rule covers /authc , /authc?q=name /authc#anchor urls as well
+		configuration.add(factory.createChain("/login").add(factory.anon()).build());
+		
+		configuration.add(factory.createChain("/assets/**").add(factory.anon()).build());
+		configuration.add(factory.createChain("/processlist").add(factory.authc()).build());
+		configuration.add(factory.createChain("/").add(factory.authc()).build());
+		/*		
+		 for future extensions
+		configuration.add(factory.createChain("/authc/signup").add(factory.anon()).build());
+		configuration.add(factory.createChain("/contributed/**").add(factory.authc()).build());
+		configuration.add(factory.createChain("/user/signup").add(factory.anon()).build());
+		configuration.add(factory.createChain("/user/**").add(factory.user()).build());
+		configuration.add(factory.createChain("/roles/user/**").add(factory.roles(), "user").build());
+		configuration.add(factory.createChain("/roles/manager/**").add(factory.roles(), "manager").build());
+		configuration.add(factory.createChain("/perms/view/**").add(factory.perms(), "news:view").build());
+		configuration.add(factory.createChain("/perms/edit/**").add(factory.perms(), "news:edit").build());
+		*/
+		}
+	
+	 
+	 
 
 }

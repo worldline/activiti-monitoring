@@ -1,64 +1,121 @@
 package org.activiti.monitor.pages;
 
-import org.activiti.engine.IdentityService;
-import org.apache.tapestry5.annotations.Component;
-import org.apache.tapestry5.annotations.InjectComponent;
+import java.io.IOException;
+
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.LockedAccountException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.StringUtils;
+import org.apache.shiro.web.util.SavedRequest;
+import org.apache.shiro.web.util.WebUtils;
+import org.apache.tapestry5.PersistenceConstants;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
-import org.apache.tapestry5.corelib.components.Form;
-import org.apache.tapestry5.corelib.components.PasswordField;
 import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.services.RequestGlobals;
+import org.apache.tapestry5.services.Response;
+import org.slf4j.Logger;
+import org.tynamo.security.services.PageService;
+import org.tynamo.security.services.SecurityService;
 
-public class Login {
+public class  Login
+{
+	@Inject
+	private Logger logger;
 
-	@Persist
 	@Property
-	private String username;
+	private String jsecLogin;
 
 	@Property
-	private String password;
+	private String jsecPassword;
 
-	@Component
-	private Form loginForm;
+	@Property
+	private boolean jsecRememberMe;
 
-	@InjectComponent(value = "password")
-	private PasswordField passwordField;
+	@Persist(PersistenceConstants.FLASH)
+	private String loginMessage;
 
 	@Inject
-	IdentityService identityService;
+	private Response response;
 
-	void onValidateFromLoginForm() {
-		System.out.println("Username=" + username);
-		;
-		System.out.println("Username=" + password);
-		;
+	@Inject
+	private RequestGlobals requestGlobals;
 
-		if (!identityService.checkPassword(username, password)) {
-			// record an error, and thereby prevent Tapestry from emitting a
-			// "success" event
-			loginForm.recordError(passwordField,
-					"Invalid user name or password.");
+	@Inject
+	private SecurityService securityService;
+
+
+	public Object onActionFromJsecLoginForm()
+	{
+
+		Subject currentUser = securityService.getSubject();
+
+		if (currentUser == null)
+		{
+			throw new IllegalStateException("Subject can`t be null");
+		}
+
+		UsernamePasswordToken token = new UsernamePasswordToken(jsecLogin, jsecPassword);
+		token.setRememberMe(jsecRememberMe);
+
+		try
+		{
+			currentUser.login(token);
+		} catch (UnknownAccountException e)
+		{
+			loginMessage = "Account not exists";
+			return null;
+		} catch (IncorrectCredentialsException e)
+		{
+			loginMessage = "Wrong password";
+			return null;
+		} catch (LockedAccountException e)
+		{
+			loginMessage = "Account locked";
+			return null;
+		} catch (AuthenticationException e)
+		{
+			loginMessage = "Authentication Error";
+			return null;
+		}
+
+		SavedRequest savedRequest = WebUtils.getAndClearSavedRequest(requestGlobals.getHTTPServletRequest());
+
+		// TODO: try using shiro's own WebUtils.redirectToSavedRequest
+		if (savedRequest != null && savedRequest.getMethod().equalsIgnoreCase("GET"))
+		{
+			try
+			{
+				response.sendRedirect(savedRequest.getRequestUrl());
+				return null;
+			} catch (IOException e)
+			{
+				logger.warn("Can't redirect to saved request.");
+				return Index.class;
+			}
+		} else
+		{
+			return Index.class;
+		}
+
+	}
+
+	public String getLoginMessage()
+	{
+		if (hasLoginMessage())
+		{
+			return loginMessage;
+		} else
+		{
+			return " ";
 		}
 	}
 
-	/**
-	 * Validation passed, so we'll go to the "PostLogin" page
-	 */
-	Object onSuccess() {
-
-		return Index.class;
-
-		/*
-		 * 
-		 * UsernamePasswordToken token = new UsernamePasswordToken(username,
-		 * password);
-		 * 
-		 * //�Remember Me� built-in: token.setRememberMe(true);
-		 * 
-		 * Subject currentUser = SecurityUtils.getSubject();
-		 * 
-		 * currentUser.login(token); return null;
-		 */
+	public boolean hasLoginMessage()
+	{
+		return StringUtils.hasText(loginMessage);
 	}
-
 }
