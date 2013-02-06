@@ -112,8 +112,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
+					<source>1.6</source>
+					<target>1.6</target>
 					<optimize>true</optimize>
 				</configuration>
 			</plugin>
@@ -177,7 +177,7 @@
 		<servlet-api-release-version>2.5</servlet-api-release-version>
 		<testng-release-version>5.14.10</testng-release-version>
 		<easymock-release-version>3.0</easymock-release-version>
-		<activiti.version>5.10</activiti.version>
+		<activiti.version>5.11</activiti.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
