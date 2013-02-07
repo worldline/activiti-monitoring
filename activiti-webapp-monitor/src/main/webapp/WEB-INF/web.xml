@@ -28,35 +28,29 @@
 		<param-name>tapestry.use-external-spring-context</param-name>
 		<param-value>true</param-value>
 	</context-param>
-
+	
 	<filter>
-		<filter-name>app</filter-name>
-		<!-- Special filter that adds in a T5 IoC module derived from the Spring 
-			WebApplicationContext. -->
+		<filter-name>processImageFilter</filter-name>			
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>processImageFilter</filter-name>
+		<url-pattern>/processImage</url-pattern>
+	</filter-mapping>
+	
+	<filter>
+		<filter-name>app</filter-name>		
 		<filter-class>org.apache.tapestry5.spring.TapestrySpringFilter</filter-class>
 	</filter>
+	
 	<filter-mapping>
 		<filter-name>app</filter-name>
 		<url-pattern>/*</url-pattern>
-		<!--  temporarily
-		<url-pattern>/app/*</url-pattern>
-		 -->
 	</filter-mapping>
-
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 
-	<servlet>
-		<servlet-name>processImageServlet</servlet-name>
-		<servlet-class>
-			org.springframework.web.context.support.HttpRequestHandlerServlet
-		</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>processImageServlet</servlet-name>
-		<url-pattern>/processImage</url-pattern>
-	</servlet-mapping>
 
 </web-app>
       

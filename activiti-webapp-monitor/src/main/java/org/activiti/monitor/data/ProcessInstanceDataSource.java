@@ -66,7 +66,6 @@ public class ProcessInstanceDataSource implements GridDataSource {
 			listProcessesFromParent(sortConstraints);
 		}
 
-		System.out.println("prepared " + pdfDaoList.size());
 	}
 
 	private List<Instance> listProcessesFromParent(
@@ -119,7 +118,6 @@ public class ProcessInstanceDataSource implements GridDataSource {
 				SortConstraint sortConstraint = sortConstraints.get(0);
 				Column sortColumn = Column.from(sortConstraint
 						.getPropertyModel().getPropertyName());
-				System.out.println(sortColumn);
 				switch (sortColumn) {
 				case BK:
 					query = query.orderByProcessInstanceBusinessKey();
@@ -202,7 +200,6 @@ public class ProcessInstanceDataSource implements GridDataSource {
 
 	@Override
 	public Object getRowValue(int index) {
-		System.out.println(index);
 		Instance res = pdfDaoList.get(index - startIndex);
 		return res;
 	}

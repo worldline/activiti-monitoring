@@ -44,4 +44,6 @@
 		factory-method="getHistoryService" />
 	<bean id="managementService" factory-bean="processEngine"
 		factory-method="getManagementService" />
+	<bean id="processImageFilter" class="org.activiti.monitor.servlet.ProcessImageFilter" />
+		
 </beans>
