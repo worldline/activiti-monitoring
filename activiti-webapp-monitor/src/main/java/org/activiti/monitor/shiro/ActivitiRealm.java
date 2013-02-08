@@ -1,6 +1,5 @@
 package org.activiti.monitor.shiro;
 
-
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.identity.GroupQuery;
@@ -17,9 +16,8 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.tapestry5.ioc.annotations.Inject;
 
-
 public class ActivitiRealm extends AuthorizingRealm {
-	final  static String ADMIN_ROLE="admin";
+	final static String ADMIN_ROLE = "admin";
 	@Inject
 	ProcessEngine processEngine;
 
@@ -61,7 +59,9 @@ public class ActivitiRealm extends AuthorizingRealm {
 
 		// check if the username ins member of "admin" role
 		GroupQuery query = identityService.createGroupQuery();
-		if (query.groupMember(username).groupName(ADMIN_ROLE).count() == 0) {
+		System.out.println(query.groupMember(username).groupId(ADMIN_ROLE)
+				.count());
+		if (query.groupMember(username).groupId(ADMIN_ROLE).count() == 0) {
 			throw new IncorrectCredentialsException();
 		}
 		return buildAuthenticationInfo(username, password);
