@@ -18,11 +18,9 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.services.RequestGlobals;
 import org.apache.tapestry5.services.Response;
 import org.slf4j.Logger;
-import org.tynamo.security.services.PageService;
 import org.tynamo.security.services.SecurityService;
 
-public class  Login
-{
+public class Login {
 	@Inject
 	private Logger logger;
 
@@ -47,75 +45,62 @@ public class  Login
 	@Inject
 	private SecurityService securityService;
 
-
-	public Object onActionFromJsecLoginForm()
-	{
+	public Object onActionFromJsecLoginForm() {
 
 		Subject currentUser = securityService.getSubject();
 
-		if (currentUser == null)
-		{
+		if (currentUser == null) {
 			throw new IllegalStateException("Subject can`t be null");
 		}
 
-		UsernamePasswordToken token = new UsernamePasswordToken(jsecLogin, jsecPassword);
+		UsernamePasswordToken token = new UsernamePasswordToken(jsecLogin,
+				jsecPassword);
 		token.setRememberMe(jsecRememberMe);
 
-		try
-		{
+		try {
 			currentUser.login(token);
-		} catch (UnknownAccountException e)
-		{
+		} catch (UnknownAccountException e) {
 			loginMessage = "Account not exists";
 			return null;
-		} catch (IncorrectCredentialsException e)
-		{
+		} catch (IncorrectCredentialsException e) {
 			loginMessage = "Wrong password";
 			return null;
-		} catch (LockedAccountException e)
-		{
+		} catch (LockedAccountException e) {
 			loginMessage = "Account locked";
 			return null;
-		} catch (AuthenticationException e)
-		{
+		} catch (AuthenticationException e) {
 			loginMessage = "Authentication Error";
 			return null;
 		}
 
-		SavedRequest savedRequest = WebUtils.getAndClearSavedRequest(requestGlobals.getHTTPServletRequest());
+		SavedRequest savedRequest = WebUtils
+				.getAndClearSavedRequest(requestGlobals.getHTTPServletRequest());
 
 		// TODO: try using shiro's own WebUtils.redirectToSavedRequest
-		if (savedRequest != null && savedRequest.getMethod().equalsIgnoreCase("GET"))
-		{
-			try
-			{
+		if (savedRequest != null
+				&& savedRequest.getMethod().equalsIgnoreCase("GET")) {
+			try {
 				response.sendRedirect(savedRequest.getRequestUrl());
 				return null;
-			} catch (IOException e)
-			{
+			} catch (IOException e) {
 				logger.warn("Can't redirect to saved request.");
 				return Index.class;
 			}
-		} else
-		{
+		} else {
 			return Index.class;
 		}
 
 	}
 
-	public String getLoginMessage()
-	{
-		if (hasLoginMessage())
-		{
+	public String getLoginMessage() {
+		if (hasLoginMessage()) {
 			return loginMessage;
-		} else
-		{
+		} else {
 			return " ";
 		}
 	}
 
-	public boolean hasLoginMessage()
-	{
+	public boolean hasLoginMessage() {
 		return StringUtils.hasText(loginMessage);
 	}
 }
