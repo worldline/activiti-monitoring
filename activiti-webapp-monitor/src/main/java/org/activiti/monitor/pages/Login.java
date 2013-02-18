@@ -84,10 +84,10 @@ public class Login {
 				return null;
 			} catch (IOException e) {
 				logger.warn("Can't redirect to saved request.");
-				return Index.class;
+				return ProcessList.class;
 			}
 		} else {
-			return Index.class;
+			return ProcessList.class;
 		}
 
 	}

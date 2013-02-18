@@ -161,11 +161,11 @@ public class AppModule {
 				SecurityFilterChainFactory factory) {
 			// /authc/** rule covers /authc , /authc?q=name /authc#anchor urls as well
 		configuration.add(factory.createChain("/login").add(factory.anon()).build());
-		
+		configuration.add(factory.createChain("/authc/**").add(factory.authc()).build());		
 		configuration.add(factory.createChain("/assets/**").add(factory.anon()).build());
 		configuration.add(factory.createChain("/processlist").add(factory.authc()).build());
-		configuration.add(factory.createChain("/").add(factory.authc()).build());
-		/*		
+		/*
+				
 		 for future extensions
 		configuration.add(factory.createChain("/authc/signup").add(factory.anon()).build());
 		configuration.add(factory.createChain("/contributed/**").add(factory.authc()).build());

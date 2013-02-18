@@ -13,7 +13,7 @@
 
 		<!-- PAGE HEADER -->
 		<div id="header">
-			<a t:type="pageLink" t:page="Index">
+			<a t:type="pageLink" t:page="ProcessList">
 				<h1>
 					<img src="${asset:context:static/img/xa.png}" />
 				</h1>
@@ -21,7 +21,7 @@
 			</a>
 			<div id="navbar">
 				<ul class="k-navbar">
-					<li class="home"><a t:type="pageLink" t:page="Index">Home</a></li>
+					<li class="home"><a t:type="pageLink" t:page="ProcessList">Home</a></li>
 				</ul>
 			</div>
 		</div>

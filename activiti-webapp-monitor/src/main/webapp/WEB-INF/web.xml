@@ -35,7 +35,7 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>processImageFilter</filter-name>
-		<url-pattern>/app/processImage</url-pattern>
+		<url-pattern>processImage</url-pattern>
 	</filter-mapping>
 	
 	<filter>
