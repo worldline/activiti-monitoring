@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.activiti</groupId>
 	<artifactId>activiti-webapp-monitor</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>5.11</version>
 	<packaging>war</packaging>
 	<name>activiti-webapp-monitor Tapestry 5 Application</name>
 	<dependencies>
