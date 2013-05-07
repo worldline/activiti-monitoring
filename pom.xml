@@ -7,6 +7,12 @@
 	<version>5.11</version>
 	<packaging>war</packaging>
 	<name>activiti-webapp-monitor Tapestry 5 Application</name>
+        <parent>
+            <groupId>org.kazansource</groupId>
+            <artifactId>kazan-parent</artifactId>
+            <version>3</version>
+        </parent>
+
 	<dependencies>
 		<!-- Too set up an application with a database, change the artifactId below 
 			to tapestry-hibernate, and add a dependency on your JDBC driver. You'll also 
