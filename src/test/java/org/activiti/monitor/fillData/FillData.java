@@ -111,7 +111,7 @@ public class FillData {
 		Random random = new Random();
 		for (int i = 0; i < random.nextInt(10); i++) {
 			var.put("var" + random.nextInt(100),
-					new Data("" + random.nextInt(999)));
+					new String((new Long(random.nextInt(999))).toString()));
 		}
 		return var;
 	}
