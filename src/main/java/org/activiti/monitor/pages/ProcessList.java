@@ -1,5 +1,9 @@
 package org.activiti.monitor.pages;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -7,13 +11,16 @@ import java.util.List;
 import java.util.Stack;
 import java.util.logging.Logger;
 
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.monitor.dao.DefinitionDAO;
 import org.activiti.monitor.dao.HistoryDAO;
 import org.activiti.monitor.dao.InstanceDAO;
@@ -25,7 +32,10 @@ import org.activiti.monitor.data.ProcessInstanceDataSource;
 import org.activiti.monitor.data.ProcessPath;
 import org.activiti.monitor.data.SearchParameters;
 import org.activiti.monitor.data.Variable;
+import org.activiti.monitor.graphics.ProcessDefinitionImageStreamResourceBuilder;
 import org.apache.tapestry5.ComponentResources;
+import org.apache.tapestry5.Link;
+import org.apache.tapestry5.StreamResponse;
 import org.apache.tapestry5.annotations.Environmental;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
@@ -33,6 +43,7 @@ import org.apache.tapestry5.beaneditor.BeanModel;
 import org.apache.tapestry5.grid.GridDataSource;
 import org.apache.tapestry5.json.JSONObject;
 import org.apache.tapestry5.services.BeanModelSource;
+import org.apache.tapestry5.services.Response;
 
 public class ProcessList {
 	protected static final Logger LOGGER = Logger.getLogger(ProcessList.class
@@ -58,6 +69,9 @@ public class ProcessList {
 
 	@Inject
 	private ComponentResources resources;
+
+	@Inject
+	RuntimeService runtimeService;
 
 	@Property
 	private Definition processDefinition;
@@ -106,6 +120,9 @@ public class ProcessList {
 	@Property
 	@Persist
 	private Date endDateSearch;
+	
+	@Inject 
+	private ComponentResources _resources; 	
 
 	void adjustProcess() {
 		if (parentProcess == null)
@@ -256,4 +273,33 @@ public class ProcessList {
 		adjustProcess();
 
 	}
+	 public Link getProcessImageURL() { 
+		    return _resources.createEventLink("image",  getParent().getId()); 
+		  }
+	 
+     ProcessDefinitionImageStreamResourceBuilder imageBuilder= null;
+	 
+	 
+	 public Object onImage(long processInstanceId) { 
+			if (imageBuilder == null)
+				  imageBuilder = new ProcessDefinitionImageStreamResourceBuilder();
+
+	     ProcessInstance pi = runtimeService.createProcessInstanceQuery()
+			.processInstanceId((new Long(processInstanceId)).toString()).singleResult();
+	     
+	     final InputStream is = imageBuilder.buildStreamResource(pi,
+					repositoryService, runtimeService);
+	     
+	  return new StreamResponse() { 
+
+	    public String getContentType()  { return "img/jpeg"; } 
+
+	    public   InputStream getStream() throws IOException { return is; }
+
+		@Override
+		public void prepareResponse(Response response) {
+		} 
+	  };
+	  }; 
+	 
 }

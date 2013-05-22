@@ -32,7 +32,7 @@
         	<tr>
         		<td align="center">
         			<t:if test="hasImage">
- 						<div align="center" position="absolute"> <img src="processImage?instanceId=${parent.id}"/> </div>
+ 						<div align="center" position="absolute"> <img src="${processImageURL}"/> </div>
  					</t:if>
 	 			</td>        	
         	</tr>
