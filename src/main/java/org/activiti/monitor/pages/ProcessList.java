@@ -1,9 +1,7 @@
 package org.activiti.monitor.pages;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -11,7 +9,6 @@ import java.util.List;
 import java.util.Stack;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
 
 import org.activiti.engine.HistoryService;

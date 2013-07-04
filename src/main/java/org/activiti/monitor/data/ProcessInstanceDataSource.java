@@ -1,6 +1,7 @@
 package org.activiti.monitor.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -12,6 +13,8 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.query.Query;
@@ -29,7 +32,6 @@ public class ProcessInstanceDataSource implements GridDataSource {
 	private List<Instance> pdfDaoList;
 	private int startIndex;
 	private final SearchParameters searchParameters;
-	private final ProcessEngine processEngine;
 	private final RepositoryService repositoryService;
 	private final HistoryService historyService;
 	private final RuntimeService runtimeService;
@@ -37,7 +39,6 @@ public class ProcessInstanceDataSource implements GridDataSource {
 	public ProcessInstanceDataSource(ProcessEngine processEngine,
 			ProcessPath parentProcess, String processDefinitionId,
 			SearchParameters searchParameters) {
-		this.processEngine = processEngine;
 		repositoryService = processEngine.getRepositoryService();
 		historyService = processEngine.getHistoryService();
 		runtimeService = processEngine.getRuntimeService();
@@ -209,6 +210,32 @@ public class ProcessInstanceDataSource implements GridDataSource {
 		return Instance.class;
 	}
 
+	static public String endStatusName(HistoricProcessInstance hi, HistoryService historyService) {
+		try {
+	        String result = null;
+	        List<String> types = Arrays.asList("endEvent", "errorEndEvent");
+	        HistoricActivityInstanceQuery query = historyService.createHistoricActivityInstanceQuery().processInstanceId(hi.getId()).activityId(hi.getEndActivityId())
+	                .finished();
+	        for (HistoricActivityInstance historicActivityInstance : query.list()) {
+	            String activityName = historicActivityInstance.getActivityName();
+	            if (types.contains(historicActivityInstance.getActivityType())) {
+	                if (result == null)
+	                    result = activityName;
+	                else
+	                	// multiple results. show none
+	                    return "";
+	            }
+	        }
+	        if (result == null)
+	        	// no result
+	            return "";
+	        else
+	            return result;
+		} 
+		catch (Exception e) {
+			return "";
+		}
+    }
 	private Instance copyInstanceDAO(HistoricProcessInstance h) {
 		Instance p = new Instance();
 		p.setId(h.getId());
@@ -217,7 +244,7 @@ public class ProcessInstanceDataSource implements GridDataSource {
 		p.setStartDate(h.getStartTime());
 		p.setEndDate(h.getEndTime());
 		p.setBusinessKey(h.getBusinessKey());
-		p.setEndStatus(h.getEndActivityId());
+		p.setEndStatus(endStatusName(h, historyService));
 		return p;
 	}
 
