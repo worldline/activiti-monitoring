@@ -1,12 +1,15 @@
 package org.activiti.monitor.dao;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.monitor.data.Instance;
@@ -31,6 +34,33 @@ public class InstanceDAO {
 		return processInstance == null || processInstance.isEnded();
 	}
 
+	private String endStatusName(String processInstanceId) {
+		try {
+	        String result = null;
+	        List<String> types = Arrays.asList("endEvent", "errorEndEvent");
+	        HistoricActivityInstanceQuery query = historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstanceId)
+	                .finished();
+	        for (HistoricActivityInstance historicActivityInstance : query.list()) {
+	            String activityName = historicActivityInstance.getActivityName();
+	            if (types.contains(historicActivityInstance.getActivityType())) {
+	                if (result == null)
+	                    result = activityName;
+	                else
+	                	// multiple results. show none
+	                    return "";
+	            }
+	        }
+	        if (result == null)
+	        	// no result
+	            return "";
+	        else
+	            return result;
+		} 
+		catch (Exception e) {
+			return "";
+		}
+    }
+	
 	private Instance copyInstanceDAO(HistoricProcessInstance h) {
 		Instance p = new Instance();
 		p.setId(h.getId());
@@ -39,7 +69,7 @@ public class InstanceDAO {
 		p.setStartDate(h.getStartTime());
 		p.setEndDate(h.getEndTime());
 		p.setBusinessKey(h.getBusinessKey());
-		p.setEndStatus(h.getEndActivityId());
+		p.setEndStatus(endStatusName(h.getEndActivityId()));
 
 		return p;
 
