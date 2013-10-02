@@ -33,7 +33,7 @@ public class ProcessDefinitionImageStreamResourceBuilder {
 		if (processDefinition != null) {
 			try {
 				InputStream definitionImageStream = ProcessDiagramGenerator
-						.generateDiagram(processDefinition,
+						.generateDiagram(repositoryService.getBpmnModel(processDefinition.getId()),
 								DEFAULT_DIAGRAM_IMAGE_EXTENSION, runtimeService
 										.getActiveActivityIds(processInstance
 												.getId()));
