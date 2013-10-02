@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.atos.bpmn</groupId>
 	<artifactId>activiti-webapp-monitor</artifactId>
-	<version>5.13y</version>
+	<version>5.13</version>
 	<packaging>war</packaging>
 	
 	<name>activiti-webapp-monitor Tapestry 5 Application</name>
