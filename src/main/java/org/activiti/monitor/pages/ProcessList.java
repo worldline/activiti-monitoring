@@ -81,8 +81,7 @@ public class ProcessList {
 	Variable variable;
 
 	@Property
-	@Environmental
-	Instance processInstance;
+	private Instance processInstance;
 
 	@Property
 	@Persist
