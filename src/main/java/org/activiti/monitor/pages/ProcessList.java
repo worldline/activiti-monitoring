@@ -33,11 +33,11 @@ import org.activiti.monitor.graphics.ProcessDefinitionImageStreamResourceBuilder
 import org.apache.tapestry5.ComponentResources;
 import org.apache.tapestry5.Link;
 import org.apache.tapestry5.StreamResponse;
-import org.apache.tapestry5.annotations.Environmental;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.beaneditor.BeanModel;
 import org.apache.tapestry5.grid.GridDataSource;
+import org.apache.tapestry5.json.JSONArray;
 import org.apache.tapestry5.json.JSONObject;
 import org.apache.tapestry5.services.BeanModelSource;
 import org.apache.tapestry5.services.Response;
@@ -116,9 +116,9 @@ public class ProcessList {
 	@Property
 	@Persist
 	private Date endDateSearch;
-	
-	@Inject 
-	private ComponentResources _resources; 	
+
+	@Inject
+	private ComponentResources _resources;
 
 	void adjustProcess() {
 		if (parentProcess == null)
@@ -161,13 +161,12 @@ public class ProcessList {
 		}
 		return histories;
 	}
-	
+
 	public BeanModel<Definition> getProcessDefinitionModel() {
 		BeanModel<Definition> model = beanModelSource.createDisplayModel(
 				Definition.class, resources.getMessages());
 		return model;
-		}
-	
+	}
 
 	public BeanModel<Instance> getInstanceModel() {
 		BeanModel<Instance> model = beanModelSource.createDisplayModel(
@@ -269,33 +268,51 @@ public class ProcessList {
 		adjustProcess();
 
 	}
-	 public Link getProcessImageURL() { 
-		    return _resources.createEventLink("image",  getParent().getId()); 
-		  }
-	 
-     ProcessDefinitionImageStreamResourceBuilder imageBuilder= null;
-	 
-	 
-	 public Object onImage(long processInstanceId) { 
-			if (imageBuilder == null)
-				  imageBuilder = new ProcessDefinitionImageStreamResourceBuilder();
 
-	     ProcessInstance pi = runtimeService.createProcessInstanceQuery()
-			.processInstanceId((new Long(processInstanceId)).toString()).singleResult();
-	     
-	     final InputStream is = imageBuilder.buildStreamResource(pi,
-					repositoryService, runtimeService);
-	     
-	  return new StreamResponse() { 
+	public Link getProcessImageURL() {
+		return _resources.createEventLink("image", getParent().getId());
+	}
 
-	    public String getContentType()  { return "img/jpeg"; } 
+	ProcessDefinitionImageStreamResourceBuilder imageBuilder = null;
 
-	    public   InputStream getStream() throws IOException { return is; }
+	public Object onImage(long processInstanceId) {
+		if (imageBuilder == null)
+			imageBuilder = new ProcessDefinitionImageStreamResourceBuilder();
 
-		@Override
-		public void prepareResponse(Response response) {
-		} 
-	  };
-	  }; 
-	 
+		ProcessInstance pi = runtimeService.createProcessInstanceQuery()
+				.processInstanceId((new Long(processInstanceId)).toString())
+				.singleResult();
+
+		final InputStream is = imageBuilder.buildStreamResource(pi,
+				repositoryService, runtimeService);
+
+		return new StreamResponse() {
+
+			public String getContentType() {
+				return "img/jpeg";
+			}
+
+			public InputStream getStream() throws IOException {
+				return is;
+			}
+
+			@Override
+			public void prepareResponse(Response response) {
+			}
+		};
+	};
+
+	public JSONObject getDefinitionOptions() {
+		JSONObject options = new JSONObject();
+		options.append("aaSorting", new JSONArray(1, "desc"));
+		options.append("bStateSave", true);
+		return options;
+	}
+
+	public JSONObject getInstanceOptions() {
+		JSONObject options = new JSONObject();
+		options.append("aaSorting", new JSONArray(2, "desc"));
+		options.append("bStateSave", true);
+		return options;
+	}
 }

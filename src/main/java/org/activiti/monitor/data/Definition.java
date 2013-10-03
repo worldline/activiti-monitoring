@@ -6,9 +6,27 @@ public class Definition {
 
 	String processDefinitionName;
 	int version;
+	long instanceCount;
+	long historyInstanceCount;
 
 	@NonVisual
 	String id;
+
+	public long getInstanceCount() {
+		return instanceCount;
+	}
+
+	public void setInstanceCount(long instanceCount) {
+		this.instanceCount = instanceCount;
+	}
+
+	public long getHistoryInstanceCount() {
+		return historyInstanceCount;
+	}
+
+	public void setHistoryInstanceCount(long historyInstanceCount) {
+		this.historyInstanceCount = historyInstanceCount;
+	}
 
 	public String getProcessDefinitionName() {
 		return processDefinitionName;

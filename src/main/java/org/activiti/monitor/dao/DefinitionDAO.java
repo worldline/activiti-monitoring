@@ -7,7 +7,9 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.monitor.data.Definition;
 import org.apache.tapestry5.annotations.Persist;
@@ -20,6 +22,12 @@ public class DefinitionDAO {
 
 	@Inject
 	RepositoryService repositoryService;
+
+	@Inject
+	HistoryService historyService;
+
+	@Inject
+	RuntimeService runtimeService;
 
 	public String getProcessDefinitionName(String processDefinitionId) {
 		if (processDefinitionNames == null)
@@ -42,6 +50,11 @@ public class DefinitionDAO {
 			p.setProcessDefinitionName(dp.getName());
 			p.setId(dp.getId());
 			p.setVersion(dp.getVersion());
+			p.setInstanceCount(runtimeService.createProcessInstanceQuery()
+					.processDefinitionId(dp.getId()).count());
+			p.setHistoryInstanceCount(historyService
+					.createHistoricProcessInstanceQuery()
+					.processDefinitionId(dp.getId()).count());
 			pdfDaoList.add(p);
 		}
 		return pdfDaoList;

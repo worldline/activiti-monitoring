@@ -44,8 +44,11 @@
 	 		</tr>
         	<tr>
 	    		<td>
-		        			<table t:type="jquery/datatable"  t:source="processDefinitions" rowsPerPage="5"
+		        			<table t:type="jquery/datatable"  t:source="processDefinitions" rowsPerPage="20"
+		        				t:options="definitionOptions"
 	                 				t:row="processDefinition"  model="processDefinitionModel">
+	                 			<p:instanceCountHeader>Ongoing processes</p:instanceCountHeader>
+	                 			<p:historyInstanceCountHeader>Total processes</p:historyInstanceCountHeader>
 	                 	        <p:processDefinitionNameCell>
 		                			<t:actionlink t:id="listRootProcesses" context="processDefinition.id">${processDefinition.processDefinitionName}</t:actionlink>
 		            			</p:processDefinitionNameCell>
@@ -92,8 +95,8 @@
 	 		</tr>
 	 		<tr>
 	 			<td>
-			      			<table t:type="jquery/datatable" t:source="processInstances" rowsPerPage="5" t:mode="true"
-			      				t:row="processInstance" model="instanceModel" > 
+			      			<table t:type="jquery/datatable" t:source="processInstances" rowsPerPage="20" t:mode="true"
+			      				t:row="processInstance" model="instanceModel" t:options="instanceOptions"> 
 	        					<p:nameCell>
 	                				<t:actionlink t:id="processBranchInstances" context="processInstance.id">${processInstance.name}</t:actionlink>
 	            				</p:nameCell>
