@@ -2,15 +2,15 @@
 <project
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
-	
+
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.atos.bpmn</groupId>
 	<artifactId>activiti-webapp-monitor</artifactId>
 	<version>5.13</version>
 	<packaging>war</packaging>
-	
+
 	<name>activiti-webapp-monitor Tapestry 5 Application</name>
-    <dependencyManagement>
+	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>net.atos.xa</groupId>
@@ -26,7 +26,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.source>1.7</java.source>
 		<java.target>1.7</java.target>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<repositories>
@@ -67,7 +66,6 @@
 		<dependency> 
 			<groupId>org.tynamo</groupId> 
 			<artifactId>tapestry-security</artifactId> 
-			<version>0.5.1</version>
 		</dependency>
 
 		<dependency>
@@ -85,9 +83,9 @@
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-spring</artifactId>
 		</dependency>
-		
+
 	</dependencies>
-	
+
 	<profiles>
 		<profile>
 			<id>mysql</id>
@@ -105,7 +103,7 @@
 			</dependencies>
 		</profile>
 	</profiles>
-	
+
 	<build>
 		<finalName>activiti-webapp-monitor</finalName>
 		<plugins>
@@ -126,29 +124,29 @@
 					<!-- to have additional tomEE plus features (CXF, Active MQ, Geronimo 
 						Connector), uncomment this line: -->
 					<!--tomeeClassifier>plus</tomeeClassifier -->
-					
-					<debug>false</debug>
-					<debugPort>5005</debugPort>
-					<args>-Xms256m -Xmx512m -XX:MaxPermSize=256M</args>
 
-					<synchronization>
-						<binariesDir>${project.build.directory}/classes</binariesDir>
-						<targetBinariesDir>${project.build.directory}/apache-tomee/webapps/${project.build.finalName}/WEB-INF/classes</targetBinariesDir>
-						<resourcesDir>${project.basedir}/src/main/webapp</resourcesDir>
-						<targetResourcesDir>${project.build.directory}/apache-tomee/webapps/${project.build.finalName}</targetResourcesDir>
-						<updateInterval>10</updateInterval>
-						<extensions>
-							<extension>.class</extension>
-							<extension>.tml</extension>
-						</extensions>
-					</synchronization>
-					<libs>
-						<lib>mysql:mysql-connector-java:5.1.22</lib>
-					</libs>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	<reporting />
+				<debug>false</debug>
+				<debugPort>5005</debugPort>
+				<args>-Xms256m -Xmx512m -XX:MaxPermSize=256M</args>
+
+				<synchronization>
+					<binariesDir>${project.build.directory}/classes</binariesDir>
+					<targetBinariesDir>${project.build.directory}/apache-tomee/webapps/${project.build.finalName}/WEB-INF/classes</targetBinariesDir>
+					<resourcesDir>${project.basedir}/src/main/webapp</resourcesDir>
+					<targetResourcesDir>${project.build.directory}/apache-tomee/webapps/${project.build.finalName}</targetResourcesDir>
+					<updateInterval>10</updateInterval>
+					<extensions>
+						<extension>.class</extension>
+						<extension>.tml</extension>
+					</extensions>
+				</synchronization>
+				<libs>
+					<lib>mysql:mysql-connector-java:5.1.22</lib>
+				</libs>
+			</configuration>
+		</plugin>
+	</plugins>
+</build>
+<reporting />
 
 </project>
