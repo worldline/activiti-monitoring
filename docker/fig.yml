@@ -1,0 +1,13 @@
+oracle:
+  image: wnameless/oracle-xe-11g
+  ports:
+   - "49160:22"
+   - "49161:1521"
+activiti:
+  build: .
+  ports:
+   - "80:8080"
+  volumes:
+   - /vagrant/logs:/usr/local/tomcat/logs
+  links:
+   - oracle:db
