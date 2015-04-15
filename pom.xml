@@ -10,17 +10,6 @@
 	<packaging>war</packaging>
 
 	<name>activiti-webapp-monitor Tapestry 5 Application</name>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>net.atos.xa</groupId>
-				<artifactId>release</artifactId>
-				<version>2.3.1</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -33,56 +22,58 @@
 			<id>Alfresco Maven Repository</id>
 			<url>https://maven.alfresco.com/nexus/content/groups/public/</url>
 		</repository>
-		<repository>
-			<id>proxiedRepositories</id>
-			<name>Kazan and common proxied repositories</name>
-			<url>http://kazan.priv.atos.fr/nexus/content/repositories/public/</url>
-		</repository>
 	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>proxiedPluginRepositories</id>
-			<name>Kazan and common proxied plugins repositories</name>
-			<url>http://kazan.priv.atos.fr/nexus/content/repositories/public/</url>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<dependencies>
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.tapestry</groupId>
 			<artifactId>tapestry-core</artifactId>
+			<version>5.3.7</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.tapestry</groupId>
 			<artifactId>tapestry-spring</artifactId>
+			<version>5.3.7</version>
 		</dependency>
-
+<!--
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>4.0.6.RELEASE</version>
+		</dependency>
+-->
 		<dependency>
 			<groupId>org.tynamo</groupId>
 			<artifactId>tapestry-security</artifactId>
+			<version>0.5.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
 
+<!--
 		<dependency>
 			<groupId>net.atos.tapestry</groupId>
 			<artifactId>tapestry5-kawwa-components</artifactId>
 		</dependency>
+-->
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-spring</artifactId>
+			<version>5.13</version>
+		</dependency>
 
 		<dependency>
-			<groupId>com.worldline.sdco</groupId>
-			<artifactId>activiti-spring</artifactId>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>3.1.2.RELEASE</version>
 		</dependency>
+
 
 	</dependencies>
 
@@ -99,6 +90,7 @@
 				<dependency>
 					<groupId>mysql</groupId>
 					<artifactId>mysql-connector-java</artifactId>
+					<version>5.1.6</version>
 				</dependency>
 			</dependencies>
 		</profile>
