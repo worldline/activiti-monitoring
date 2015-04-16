@@ -22,9 +22,24 @@
 			<id>Alfresco Maven Repository</id>
 			<url>https://maven.alfresco.com/nexus/content/groups/public/</url>
 		</repository>
+		<repository>
+					<id>devlab722-repo</id>
+					<url>http://nexus.devlab722.net/nexus/content/repositories/releases</url>
+					<snapshots>
+										<enabled>false</enabled>
+					</snapshots>
+		</repository>
+
 	</repositories>
 
+
 	<dependencies>
+		<dependency>
+			<groupId>net.atos.tapestry</groupId>
+			<artifactId>tapestry5-kawwa-components</artifactId>
+			<version>2.0.3</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.tapestry</groupId>
 			<artifactId>tapestry-core</artifactId>
