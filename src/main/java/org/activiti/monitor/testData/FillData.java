@@ -1,4 +1,4 @@
-package org.activiti.monitor.fillData;
+package org.activiti.monitor.testData;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -147,9 +147,9 @@ public class FillData {
 	}
 
 	String readFile(String path) throws IOException {
-
+        System.out.println(path);
 		BufferedReader br = new BufferedReader(new InputStreamReader(
-				ClassLoader.getSystemResourceAsStream(path), "UTF-8"));
+				this.getClass().getClassLoader().getResourceAsStream(path), "UTF-8"));
 
 		StringBuffer sb = new StringBuffer();
 		for (int c = br.read(); c != -1; c = br.read())
