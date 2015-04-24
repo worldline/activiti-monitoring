@@ -77,7 +77,7 @@
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-spring</artifactId>
-			<version>5.13</version>
+			<version>5.14</version>
 		</dependency>
 
 		<dependency>
